@@ -17,7 +17,7 @@ import {
   AreaChart,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Repeat, Calendar, Link as LinkIcon, Sparkles } from "lucide-react";
+import { Repeat, Calendar, Link as LinkIcon, Lightbulb } from "lucide-react";
 
 // Updated Palette using CSS variables would be ideal, but for now we keep a neutral palette 
 // that works decently on both, or we could use specific hexes.
@@ -121,6 +121,7 @@ export function EmotionChart({ data }: EmotionChartProps) {
                   borderRadius: "8px",
                   color: "var(--card-foreground)",
                 }}
+                itemStyle={{ color: "var(--card-foreground)" }}
                 formatter={(value) => `${Math.round((value as number) * 100)}%`}
               />
             </PieChart>
@@ -287,7 +288,7 @@ export function PatternCard({ pattern }: PatternCardProps) {
       case "correlation":
         return <LinkIcon className="w-5 h-5" />;
       default:
-        return <Sparkles className="w-5 h-5" />;
+        return <Lightbulb className="w-5 h-5" />;
     }
   };
 

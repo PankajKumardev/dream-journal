@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, BarChart3, Brain, Activity, Clock, Loader2 } from "lucide-react";
+import { Lightbulb, BarChart3, Brain, Activity, Clock, Loader2, Zap } from "lucide-react";
 
 interface Pattern {
   id: string;
@@ -148,7 +148,7 @@ export default function InsightsPage() {
           >
             {[
                { label: "Total Dreams", value: stats.totalDreams, icon: <Brain className="w-4 h-4" /> },
-               { label: "Analyzed", value: stats.analyzedDreams, icon: <Sparkles className="w-4 h-4" /> },
+               { label: "Analyzed", value: stats.analyzedDreams, icon: <Lightbulb className="w-4 h-4" /> },
                { label: "Nightmares", value: stats.nightmareCount, icon: <Activity className="w-4 h-4" /> },
                { label: "Lucid Dreams", value: stats.lucidCount, icon: <BarChart3 className="w-4 h-4" /> }
             ].map((stat, i) => (
@@ -248,7 +248,7 @@ export default function InsightsPage() {
             ) : (
               <div className="py-24 text-center border border-dashed border-border rounded-xl bg-card/50">
                  <div className="w-16 h-16 mx-auto bg-card rounded-full flex items-center justify-center mb-4 border border-border">
-                    <Sparkles className="w-6 h-6 text-muted-foreground" />
+                    <Zap className="w-6 h-6 text-muted-foreground" />
                  </div>
                  <h3 className="font-serif text-xl text-foreground mb-2">No patterns detected</h3>
                  <p className="text-muted-foreground">We need more entries to find connections.</p>
