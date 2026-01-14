@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     "AI-powered dream journal with voice recording, pattern detection, and psychological insights. Record, analyze, and understand your dreams.",
   keywords: ["dream journal", "dream analysis", "AI", "psychology", "lucid dreaming"],
   authors: [{ name: "Dream Journal" }],
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   manifest: "/manifest.json",
 };
 

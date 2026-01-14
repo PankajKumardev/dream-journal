@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // Public routes that don't require authentication
-  const publicRoutes = ["/", "/login", "/api/auth"];
+  const publicRoutes = ["/", "/login", "/api/auth", "/privacy", "/terms"];
   const isPublicRoute = publicRoutes.some(route => 
     pathname === route || pathname.startsWith(route + "/")
   );
@@ -14,6 +14,7 @@ export function middleware(request: NextRequest) {
   const isStaticOrInternal = 
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
+    pathname.startsWith("/icon") ||
     pathname.includes(".");
 
   // Allow public routes and static files
@@ -37,6 +38,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|.*\\..*|api/auth).*)",
   ],
 };
