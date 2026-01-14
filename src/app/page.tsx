@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import {
   LandingNavbar,
   HeroSection,
@@ -12,10 +13,12 @@ import {
   LandingFooter,
 } from "@/components/landing";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await auth();
+  
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <LandingNavbar />
+      <LandingNavbar session={session} />
 
       <main className="pt-32">
         <HeroSection />
