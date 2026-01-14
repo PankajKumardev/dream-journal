@@ -28,13 +28,23 @@ const itemVariants = {
 
 export function HeroSection() {
   return (
-    <section className="relative px-6 pb-24 md:pb-32 flex flex-col items-center text-center overflow-hidden mt-8">
+    <section className="relative px-6 pb-32 md:pb-48 flex flex-col items-center text-center overflow-hidden mb-12 mt-8">
       <motion.div
         initial="visible"
         animate="visible"
         variants={containerVariants}
         className="relative max-w-4xl mx-auto space-y-8 z-10"
       >
+        <motion.div variants={itemVariants} className="flex justify-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/50 border border-border text-secondary-foreground text-sm font-medium">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+            Journaling Reimagined
+          </div>
+        </motion.div>
+
         <motion.h1 
           variants={itemVariants}
           className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] font-serif font-medium tracking-tight text-foreground mb-6"

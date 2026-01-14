@@ -37,7 +37,7 @@ export default function TermsPage() {
               By using Dream Journal, you agree to these terms. They are designed to ensure a safe, private, and respectful environment for self-reflection.
             </p>
              <div className="flex gap-4 text-sm text-muted-foreground pt-4 border-t border-border">
-               <span>Last updated: October 24, 2026</span>
+               <span>Last updated: January 15, 2026</span>
                <span>•</span>
                <span>Version 1.0</span>
             </div>
@@ -72,7 +72,7 @@ export default function TermsPage() {
               </h2>
               <div className="text-muted-foreground leading-7 space-y-4">
                 <p>
-                  **Dream Journal is NOT a medical device/service.** The insights, patterns, and interpretations provided by our AI are for entertainment and self-reflection purposes only.
+                  <span className="text-foreground font-medium">Dream Journal is NOT a medical device/service.</span> The insights, patterns, and interpretations provided by our AI are for entertainment and self-reflection purposes only.
                 </p>
                 <p>
                   We do not diagnose or treat mental health conditions. If you are experiencing psychological distress, nightmares, or sleep disorders, please consult a qualified healthcare professional.
@@ -95,7 +95,7 @@ export default function TermsPage() {
              <section className="pt-8 border-t border-border">
                <h2 className="font-serif text-2xl text-foreground mb-4">Questions?</h2>
                <p className="text-muted-foreground leading-relaxed">
-                  For legal inquiries, please contact <a href="mailto:legal@dreamjournal.ai" className="text-foreground hover:underline decoration-muted-foreground underline-offset-4">legal@dreamjournal.ai</a>.
+                  For legal inquiries, please contact <a href="mailto:pankajams1234@gmail.com" className="text-foreground hover:underline decoration-muted-foreground underline-offset-4">pankajams1234@gmail.com</a>.
                </p>
             </section>
 

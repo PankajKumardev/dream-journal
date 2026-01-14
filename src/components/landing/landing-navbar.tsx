@@ -9,12 +9,15 @@ export function LandingNavbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <button 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="flex items-center gap-2 cursor-pointer"
+        >
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
             <Moon className="w-4 h-4 text-primary-foreground fill-current" />
           </div>
           <span className="font-serif font-medium text-lg tracking-tight text-foreground">Dream Journal</span>
-        </div>
+        </button>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
           <a href="#workflow" className="hover:text-foreground transition-colors">Method</a>

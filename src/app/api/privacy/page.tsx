@@ -39,7 +39,7 @@ export default function PrivacyPage() {
               We believe they deserve the highest standard of privacy and protection.
             </p>
             <div className="flex gap-4 text-sm text-zinc-500 pt-4 border-t border-[#27272A]">
-               <span>Last updated: October 24, 2026</span>
+               <span>Last updated: January 15, 2026</span>
                <span>•</span>
                <span>Version 1.0</span>
             </div>

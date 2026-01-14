@@ -16,7 +16,7 @@ export function LandingFooter() {
         <div className="flex gap-8">
           <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-          <a href="#" className="hover:text-foreground transition-colors">Twitter</a>
+          <a href="http://x.com/pankajkumar_dev" target="_blank" className="hover:text-foreground transition-colors">X/Twitter</a>
         </div>
         <div>
           &copy; {new Date().getFullYear()} Dream Journal AI.

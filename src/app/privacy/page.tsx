@@ -39,7 +39,7 @@ export default function PrivacyPage() {
               We believe they deserve the highest standard of privacy and protection.
             </p>
             <div className="flex gap-4 text-sm text-muted-foreground pt-4 border-t border-border">
-               <span>Last updated: October 24, 2026</span>
+               <span>Last updated: January 15, 2026</span>
                <span>•</span>
                <span>Version 1.0</span>
             </div>
@@ -90,15 +90,15 @@ export default function PrivacyPage() {
               <ul className="grid gap-3 text-muted-foreground">
                 <li className="flex gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 mt-2.5" />
-                  <span><strong>Right to Access:</strong> You can export your entire journal at any time.</span>
+                  <span><span className="text-foreground font-medium">Right to Access:</span> You can export your entire journal at any time.</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 mt-2.5" />
-                  <span><strong>Right to Erasure:</strong> You can permanently delete your account and all associated data instantly.</span>
+                  <span><span className="text-foreground font-medium">Right to Erasure:</span> You can permanently delete your account and all associated data instantly.</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 mt-2.5" />
-                  <span><strong>Right to Rectify:</strong> You can edit or update your entries as you see fit.</span>
+                  <span><span className="text-foreground font-medium">Right to Rectify:</span> You can edit or update your entries as you see fit.</span>
                 </li>
               </ul>
             </section>
