@@ -23,15 +23,15 @@ const steps = [
 
 export function WorkflowSection() {
   return (
-    <section id="workflow" className="px-6 py-24 md:py-32 bg-zinc-900/20 border-b border-zinc-900">
+    <section id="workflow" className="px-6 py-24 md:py-32 bg-muted/20 border-b border-border">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
         <div className="lg:sticky lg:top-32 h-fit space-y-6">
-          <h2 className="text-4xl md:text-5xl font-serif text-white">From subconcious to structured data.</h2>
-          <p className="text-zinc-400 text-lg leading-relaxed">
+          <h2 className="text-4xl md:text-5xl font-serif text-foreground">From subconcious to structured data.</h2>
+          <p className="text-muted-foreground text-lg leading-relaxed">
             The Dream Journal transforms the chaotic nature of dreams into a clear, searchable database of your inner life.
           </p>
           <Link href="/about">
-            <Button variant="outline" className="mt-4 border-zinc-700 bg-transparent hover:bg-zinc-800 text-white rounded-full">
+            <Button variant="outline" className="mt-4 rounded-full">
               Read the Manifesto
             </Button>
           </Link>
@@ -40,12 +40,12 @@ export function WorkflowSection() {
         <div className="space-y-12">
           {steps.map((item) => (
             <div key={item.step} className="flex gap-6 group">
-              <div className="text-4xl md:text-5xl font-serif text-zinc-800 group-hover:text-zinc-600 transition-colors select-none">
+              <div className="text-4xl md:text-5xl font-serif text-border group-hover:text-muted-foreground transition-colors select-none">
                 {item.step}
               </div>
               <div className="pt-2">
-                <h3 className="text-xl font-medium text-white mb-2">{item.title}</h3>
-                <p className="text-zinc-400 leading-relaxed">{item.desc}</p>
+                <h3 className="text-xl font-medium text-foreground mb-2">{item.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
               </div>
             </div>
           ))}

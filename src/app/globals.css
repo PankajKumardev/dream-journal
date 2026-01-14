@@ -44,34 +44,35 @@
 }
 
 :root {
+  color-scheme: light;
   --radius: 0.625rem;
-  /* Using standard Zinc tokens where possible, but mapping to variables for Shadcn */
-  --background: #09090B; /* Zinc 950 */
-  --foreground: #FAFAFA; /* Zinc 50 */
+  /* Light Mode - Clean White Theme */
+  --background: #FFFFFF;
+  --foreground: #09090B;
   
-  --card: #18181B; /* Zinc 900 */
-  --card-foreground: #FAFAFA;
+  --card: #F4F4F5; /* Zinc 100 */
+  --card-foreground: #09090B;
   
-  --popover: #18181B;
-  --popover-foreground: #FAFAFA;
+  --popover: #FFFFFF;
+  --popover-foreground: #09090B;
   
-  --primary: #FFFFFF;
-  --primary-foreground: #09090B;
+  --primary: #09090B;
+  --primary-foreground: #FFFFFF;
   
-  --secondary: #18181B;
-  --secondary-foreground: #FAFAFA;
+  --secondary: #F4F4F5;
+  --secondary-foreground: #09090B;
   
-  --muted: #18181B;
-  --muted-foreground: #A1A1AA; /* Zinc 400 */
+  --muted: #F4F4F5;
+  --muted-foreground: #71717A; /* Zinc 500 */
   
-  --accent: #27272A; /* Zinc 800 for hovers */
-  --accent-foreground: #FAFAFA;
+  --accent: #E4E4E7; /* Zinc 200 */
+  --accent-foreground: #09090B;
   
-  --destructive: #7f1d1d;
-  --destructive-foreground: #FAFAFA;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
   
-  --border: #27272A; /* Zinc 800 */
-  --input: #27272A;
+  --border: #E4E4E7; /* Zinc 200 */
+  --input: #E4E4E7;
   --ring: #6366F1; /* Indigo 500 */
   
   --chart-1: #6366F1;
@@ -80,18 +81,19 @@
   --chart-4: #c7d2fe;
   --chart-5: #e0e7ff;
   
-  --sidebar: #09090B;
-  --sidebar-foreground: #FAFAFA;
-  --sidebar-primary: #FFFFFF;
-  --sidebar-primary-foreground: #09090B;
-  --sidebar-accent: #18181B;
-  --sidebar-accent-foreground: #FAFAFA;
-  --sidebar-border: #27272A;
+  --sidebar: #FAFAFA;
+  --sidebar-foreground: #09090B;
+  --sidebar-primary: #09090B;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F4F4F5;
+  --sidebar-accent-foreground: #09090B;
+  --sidebar-border: #E4E4E7;
   --sidebar-ring: #6366F1;
 }
 
 .dark {
-  /* Dark mode is the default and only mode for this design */
+  color-scheme: dark;
+  /* Dark Mode - Editorial Dark Theme */
   --background: #09090B;
   --foreground: #FAFAFA;
   --card: #18181B;
@@ -111,6 +113,14 @@
   --border: #27272A;
   --input: #27272A;
   --ring: #6366F1;
+  --sidebar: #09090B;
+  --sidebar-foreground: #FAFAFA;
+  --sidebar-primary: #FFFFFF;
+  --sidebar-primary-foreground: #09090B;
+  --sidebar-accent: #18181B;
+  --sidebar-accent-foreground: #FAFAFA;
+  --sidebar-border: #27272A;
+  --sidebar-ring: #6366F1;
 }
 
 @layer base {
@@ -124,5 +134,9 @@
   h1, h2, h3, h4 {
     font-family: var(--font-serif);
     letter-spacing: -0.02em;
+  }
+  
+  ::selection {
+    @apply bg-primary text-primary-foreground;
   }
 }

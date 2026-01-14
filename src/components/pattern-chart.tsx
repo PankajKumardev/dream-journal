@@ -19,14 +19,16 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Repeat, Calendar, Link as LinkIcon, Sparkles } from "lucide-react";
 
-// Updated Palette
+// Updated Palette using CSS variables would be ideal, but for now we keep a neutral palette 
+// that works decently on both, or we could use specific hexes.
+// Let's us CSS variables where possible.
 const COLORS = [
-  "#FAFAFA", // White
-  "#52525B", // Zinc 600
-  "#71717A", // Zinc 500
-  "#3F3F46", // Zinc 700
-  "#27272A", // Zinc 800
-  "#A1A1AA", // Zinc 400
+  "var(--foreground)",
+  "var(--muted-foreground)",
+  "var(--primary)",
+  "#71717A",
+  "#3F3F46", 
+  "#A1A1AA",
 ];
 
 interface ThemeChartProps {
@@ -35,9 +37,9 @@ interface ThemeChartProps {
 
 export function ThemeChart({ data }: ThemeChartProps) {
   return (
-    <Card className="bg-[#18181B] border border-[#27272A] shadow-none">
-      <CardHeader className="pb-6 border-b border-[#27272A]">
-        <CardTitle className="text-lg font-serif font-normal text-[#FAFAFA] flex items-center gap-2">
+    <Card className="bg-card border border-border shadow-none">
+      <CardHeader className="pb-6 border-b border-border">
+        <CardTitle className="text-lg font-serif font-normal text-card-foreground flex items-center gap-2">
            Recurring Themes
         </CardTitle>
       </CardHeader>
@@ -50,23 +52,23 @@ export function ThemeChart({ data }: ThemeChartProps) {
                 type="category"
                 dataKey="theme"
                 width={80}
-                tick={{ fill: "#A1A1AA", fontSize: 12, fontFamily: "var(--font-sans)" }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 12, fontFamily: "var(--font-sans)" }}
                 axisLine={false}
                 tickLine={false}
               />
               <Tooltip
-                cursor={{ fill: "#27272A" }}
+                cursor={{ fill: "var(--accent)" }}
                 contentStyle={{
-                  backgroundColor: "#18181B",
-                  border: "1px solid #27272A",
+                  backgroundColor: "var(--card)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
-                  color: "#FAFAFA",
+                  color: "var(--card-foreground)",
                 }}
-                labelStyle={{ color: "#A1A1AA" }}
+                labelStyle={{ color: "var(--muted-foreground)" }}
               />
               <Bar
                 dataKey="count"
-                fill="#FAFAFA"
+                fill="var(--foreground)"
                 radius={[0, 4, 4, 0]}
                 barSize={20}
               />
@@ -84,9 +86,9 @@ interface EmotionChartProps {
 
 export function EmotionChart({ data }: EmotionChartProps) {
   return (
-    <Card className="bg-[#18181B] border border-[#27272A] shadow-none">
-      <CardHeader className="pb-6 border-b border-[#27272A]">
-        <CardTitle className="text-lg font-serif font-normal text-[#FAFAFA] flex items-center gap-2">
+    <Card className="bg-card border border-border shadow-none">
+      <CardHeader className="pb-6 border-b border-border">
+        <CardTitle className="text-lg font-serif font-normal text-card-foreground flex items-center gap-2">
            Emotion Distribution
         </CardTitle>
       </CardHeader>
@@ -114,10 +116,10 @@ export function EmotionChart({ data }: EmotionChartProps) {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#18181B",
-                  border: "1px solid #27272A",
+                  backgroundColor: "var(--card)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
-                  color: "#FAFAFA",
+                  color: "var(--card-foreground)",
                 }}
                 formatter={(value) => `${Math.round((value as number) * 100)}%`}
               />
@@ -132,7 +134,7 @@ export function EmotionChart({ data }: EmotionChartProps) {
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
-              <span className="text-xs text-zinc-400 capitalize">
+              <span className="text-xs text-muted-foreground capitalize">
                 {item.emotion}
               </span>
             </div>
@@ -149,9 +151,9 @@ interface DreamActivityProps {
 
 export function DreamActivityChart({ data }: DreamActivityProps) {
   return (
-    <Card className="bg-[#18181B] border border-[#27272A] shadow-none">
-      <CardHeader className="pb-6 border-b border-[#27272A]">
-        <CardTitle className="text-lg font-serif font-normal text-[#FAFAFA] flex items-center gap-2">
+    <Card className="bg-card border border-border shadow-none">
+      <CardHeader className="pb-6 border-b border-border">
+        <CardTitle className="text-lg font-serif font-normal text-card-foreground flex items-center gap-2">
            Dream Activity
         </CardTitle>
       </CardHeader>
@@ -161,13 +163,13 @@ export function DreamActivityChart({ data }: DreamActivityProps) {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="areaStroke" x1="0" y1="0" x2="0" y2="1">
-                   <stop offset="0%" stopColor="#FAFAFA" stopOpacity={0.8} />
-                   <stop offset="100%" stopColor="#FAFAFA" stopOpacity={0} />
+                   <stop offset="0%" stopColor="var(--foreground)" stopOpacity={0.8} />
+                   <stop offset="100%" stopColor="var(--foreground)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <XAxis
                 dataKey="date"
-                tick={{ fill: "#71717A", fontSize: 10, fontFamily: "var(--font-sans)" }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 10, fontFamily: "var(--font-sans)" }}
                 axisLine={false}
                 tickLine={false}
                 dy={10}
@@ -175,16 +177,16 @@ export function DreamActivityChart({ data }: DreamActivityProps) {
               <YAxis hide />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#18181B",
-                  border: "1px solid #27272A",
+                  backgroundColor: "var(--card)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
-                  color: "#FAFAFA",
+                  color: "var(--card-foreground)",
                 }}
               />
               <Area
                 type="monotone"
                 dataKey="count"
-                stroke="#FAFAFA"
+                stroke="var(--foreground)"
                 strokeWidth={1.5}
                 fill="url(#areaStroke)"
                 fillOpacity={0.1}
@@ -203,9 +205,9 @@ interface MoodTrendProps {
 
 export function MoodTrendChart({ data }: MoodTrendProps) {
   return (
-    <Card className="bg-[#18181B] border border-[#27272A] shadow-none">
-      <CardHeader className="pb-6 border-b border-[#27272A]">
-        <CardTitle className="text-lg font-serif font-normal text-[#FAFAFA] flex items-center gap-2">
+    <Card className="bg-card border border-border shadow-none">
+      <CardHeader className="pb-6 border-b border-border">
+        <CardTitle className="text-lg font-serif font-normal text-card-foreground flex items-center gap-2">
            Mood & Stress Trends
         </CardTitle>
       </CardHeader>
@@ -215,7 +217,7 @@ export function MoodTrendChart({ data }: MoodTrendProps) {
             <LineChart data={data}>
               <XAxis
                 dataKey="date"
-                tick={{ fill: "#71717A", fontSize: 10, fontFamily: "var(--font-sans)" }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 10, fontFamily: "var(--font-sans)" }}
                 axisLine={false}
                 tickLine={false}
                 dy={10}
@@ -223,28 +225,28 @@ export function MoodTrendChart({ data }: MoodTrendProps) {
               <YAxis hide domain={[0, 10]} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#18181B",
-                  border: "1px solid #27272A",
+                  backgroundColor: "var(--card)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
-                  color: "#FAFAFA",
+                  color: "var(--card-foreground)",
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="mood"
-                stroke="#FAFAFA"
+                stroke="var(--foreground)"
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4, fill: "#FAFAFA" }}
+                activeDot={{ r: 4, fill: "var(--foreground)" }}
                 name="Mood"
               />
               <Line
                 type="monotone"
                 dataKey="stress"
-                stroke="#52525B"
+                stroke="var(--muted-foreground)"
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4, fill: "#52525B" }}
+                activeDot={{ r: 4, fill: "var(--muted-foreground)" }}
                 name="Stress"
               />
             </LineChart>
@@ -253,12 +255,12 @@ export function MoodTrendChart({ data }: MoodTrendProps) {
         {/* Legend */}
         <div className="flex justify-center gap-6 mt-4">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#FAFAFA]" />
-            <span className="text-xs text-zinc-400 uppercase tracking-widest">Mood</span>
+            <div className="w-2 h-2 rounded-full bg-foreground" />
+            <span className="text-xs text-muted-foreground uppercase tracking-widest">Mood</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#52525B]" />
-            <span className="text-xs text-zinc-400 uppercase tracking-widest">Stress</span>
+            <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+            <span className="text-xs text-muted-foreground uppercase tracking-widest">Stress</span>
           </div>
         </div>
       </CardContent>
@@ -321,27 +323,27 @@ export function PatternCard({ pattern }: PatternCardProps) {
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="p-6 bg-[#18181B] rounded-xl border border-[#27272A] hover:border-[#3F3F46] transition-colors"
+      className="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors"
     >
       <div className="flex items-start gap-4">
-        <div className="p-3 bg-[#09090B] border border-[#27272A] rounded-lg text-zinc-400">
+        <div className="p-3 bg-muted/50 border border-border rounded-lg text-muted-foreground">
           {getPatternIcon()}
         </div>
         <div className="flex-1">
-          <h4 className="font-serif text-lg text-[#FAFAFA] font-light">{getPatternTitle()}</h4>
-          <p className="text-sm text-zinc-400 mt-2 leading-relaxed">
+          <h4 className="font-serif text-lg text-card-foreground font-light">{getPatternTitle()}</h4>
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             {getPatternDescription()}
           </p>
           <div className="flex items-center gap-3 mt-4">
-            <div className="flex-1 h-1 bg-[#27272A] rounded-full overflow-hidden">
+            <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${pattern.confidence * 100}%` }}
                 transition={{ duration: 0.5 }}
-                className="h-full bg-[#FAFAFA] opacity-80"
+                className="h-full bg-foreground opacity-80"
               />
             </div>
-            <span className="text-xs text-zinc-500 font-medium">
+            <span className="text-xs text-muted-foreground font-medium">
               {Math.round(pattern.confidence * 100)}% confidence
             </span>
           </div>

@@ -101,15 +101,15 @@ export default function InsightsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#09090B] pb-24 md:pt-28">
+      <div className="min-h-screen bg-background pb-24 md:pt-28">
         <Navigation />
         <main className="max-w-4xl mx-auto px-6">
-          <Skeleton className="h-8 w-48 mb-8 bg-[#18181B]" />
+          <Skeleton className="h-8 w-48 mb-8 bg-card" />
           <div className="grid md:grid-cols-2 gap-6">
-            <Skeleton className="h-64 bg-[#18181B]" />
-            <Skeleton className="h-64 bg-[#18181B]" />
-            <Skeleton className="h-48 bg-[#18181B]" />
-            <Skeleton className="h-48 bg-[#18181B]" />
+            <Skeleton className="h-64 bg-card" />
+            <Skeleton className="h-64 bg-card" />
+            <Skeleton className="h-48 bg-card" />
+            <Skeleton className="h-48 bg-card" />
           </div>
         </main>
       </div>
@@ -117,7 +117,7 @@ export default function InsightsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#09090B] pb-24 pt-24 md:pt-28 text-[#FAFAFA]">
+    <div className="min-h-screen bg-background pb-24 pt-24 md:pt-28 text-foreground transition-colors duration-300">
       <Navigation />
 
       <main className="max-w-4xl mx-auto px-6">
@@ -125,15 +125,15 @@ export default function InsightsPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-12 border-b border-[#27272A] pb-8"
+          className="mb-12 border-b border-border pb-8"
         >
           <div className="flex flex-col gap-1">
-             <p className="text-zinc-500 text-sm uppercase tracking-widest font-medium">Analytics</p>
-             <h1 className="font-serif text-4xl md:text-5xl text-[#FAFAFA]">
+             <p className="text-muted-foreground text-sm uppercase tracking-widest font-medium">Analytics</p>
+             <h1 className="font-serif text-4xl md:text-5xl text-foreground">
                Dream Insights
              </h1>
           </div>
-          <p className="text-zinc-400 mt-4 max-w-xl">
+          <p className="text-muted-foreground mt-4 max-w-xl">
             Discover recurring patterns, emotional trends, and deep correlations within your dreamscape.
           </p>
         </motion.div>
@@ -152,11 +152,11 @@ export default function InsightsPage() {
                { label: "Nightmares", value: stats.nightmareCount, icon: <Activity className="w-4 h-4" /> },
                { label: "Lucid Dreams", value: stats.lucidCount, icon: <BarChart3 className="w-4 h-4" /> }
             ].map((stat, i) => (
-                <div key={i} className="p-6 rounded-xl border border-[#27272A] bg-[#18181B] flex flex-col justify-between h-32">
-                   <div className="text-zinc-500">{stat.icon}</div>
+                <div key={i} className="p-6 rounded-xl border border-border bg-card flex flex-col justify-between h-32 hover:border-primary/20 transition-colors">
+                   <div className="text-muted-foreground">{stat.icon}</div>
                    <div>
-                      <div className="text-3xl font-serif text-[#FAFAFA]">{stat.value}</div>
-                      <div className="text-xs text-zinc-500 font-medium uppercase tracking-wider mt-1">{stat.label}</div>
+                      <div className="text-3xl font-serif text-foreground">{stat.value}</div>
+                      <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider mt-1">{stat.label}</div>
                    </div>
                 </div>
             ))}
@@ -164,12 +164,12 @@ export default function InsightsPage() {
         )}
 
         <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="bg-[#18181B] border border-[#27272A] p-1 h-auto rounded-xl">
+          <TabsList className="bg-card border border-border p-1 h-auto rounded-xl">
             {["overview", "patterns", "report"].map(tab => (
                <TabsTrigger 
                   key={tab} 
                   value={tab}
-                  className="rounded-lg data-[state=active]:bg-[#27272A] data-[state=active]:text-white text-zinc-400 capitalize px-6 py-2"
+                  className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-muted-foreground capitalize px-6 py-2 transition-all"
                >
                   {tab}
                </TabsTrigger>
@@ -222,12 +222,12 @@ export default function InsightsPage() {
                 )}
               </>
             ) : (
-              <div className="py-24 text-center border border-dashed border-[#27272A] rounded-xl bg-[#18181B]/50">
-                 <div className="w-16 h-16 mx-auto bg-[#18181B] rounded-full flex items-center justify-center mb-4 border border-[#27272A]">
-                    <BarChart3 className="w-6 h-6 text-zinc-500" />
+              <div className="py-24 text-center border border-dashed border-border rounded-xl bg-card/50">
+                 <div className="w-16 h-16 mx-auto bg-card rounded-full flex items-center justify-center mb-4 border border-border">
+                    <BarChart3 className="w-6 h-6 text-muted-foreground" />
                  </div>
-                 <h3 className="font-serif text-xl text-[#FAFAFA] mb-2">No data available</h3>
-                 <p className="text-zinc-500">Record more dreams to unlock insights.</p>
+                 <h3 className="font-serif text-xl text-foreground mb-2">No data available</h3>
+                 <p className="text-muted-foreground">Record more dreams to unlock insights.</p>
               </div>
             )}
           </TabsContent>
@@ -246,12 +246,12 @@ export default function InsightsPage() {
                 </motion.div>
               ))
             ) : (
-              <div className="py-24 text-center border border-dashed border-[#27272A] rounded-xl bg-[#18181B]/50">
-                 <div className="w-16 h-16 mx-auto bg-[#18181B] rounded-full flex items-center justify-center mb-4 border border-[#27272A]">
-                    <Sparkles className="w-6 h-6 text-zinc-500" />
+              <div className="py-24 text-center border border-dashed border-border rounded-xl bg-card/50">
+                 <div className="w-16 h-16 mx-auto bg-card rounded-full flex items-center justify-center mb-4 border border-border">
+                    <Sparkles className="w-6 h-6 text-muted-foreground" />
                  </div>
-                 <h3 className="font-serif text-xl text-[#FAFAFA] mb-2">No patterns detected</h3>
-                 <p className="text-zinc-500">We need more entries to find connections.</p>
+                 <h3 className="font-serif text-xl text-foreground mb-2">No patterns detected</h3>
+                 <p className="text-muted-foreground">We need more entries to find connections.</p>
               </div>
             )}
           </TabsContent>
@@ -259,13 +259,13 @@ export default function InsightsPage() {
           {/* Weekly Report Tab */}
           <TabsContent value="report" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="font-serif text-2xl text-[#FAFAFA]">
+              <h2 className="font-serif text-2xl text-foreground">
                 Weekly Report
               </h2>
               <Button
                 onClick={generateReport}
                 disabled={isGeneratingReport}
-                className="bg-[#FAFAFA] text-black hover:bg-zinc-200 rounded-full px-6"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6"
               >
                 {isGeneratingReport ? (
                    <>
@@ -283,12 +283,12 @@ export default function InsightsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <Card className="bg-[#18181B] border border-[#27272A] shadow-none">
-                  <CardHeader className="border-b border-[#27272A] pb-6">
-                    <CardTitle className="font-serif flex items-center gap-2 text-xl font-normal text-zinc-400">
+                <Card className="bg-card border border-border shadow-none">
+                  <CardHeader className="border-b border-border pb-6">
+                    <CardTitle className="font-serif flex items-center gap-2 text-xl font-normal text-muted-foreground">
                       <Clock className="w-4 h-4" />
                       Week of{" "}
-                      <span className="text-[#FAFAFA]">
+                      <span className="text-foreground">
                         {new Date(weeklyReport.weekStart).toLocaleDateString(
                           "en-US",
                           { month: "long", day: "numeric" }
@@ -297,28 +297,28 @@ export default function InsightsPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-8">
-                    <div className="prose prose-invert max-w-none">
-                       <p className="text-zinc-300 leading-relaxed whitespace-pre-wrap text-lg font-light">
+                    <div className="prose dark:prose-invert prose-stone max-w-none">
+                       <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-lg font-light">
                          {weeklyReport.content}
                        </p>
                     </div>
-                    <p className="text-xs text-zinc-600 mt-8 pt-4 border-t border-[#27272A]">
+                    <p className="text-xs text-muted-foreground mt-8 pt-4 border-t border-border">
                       Generated on {new Date(weeklyReport.createdAt).toLocaleDateString()}
                     </p>
                   </CardContent>
                 </Card>
               </motion.div>
             ) : (
-              <div className="py-24 text-center border border-dashed border-[#27272A] rounded-xl bg-[#18181B]/50">
-                 <div className="w-16 h-16 mx-auto bg-[#18181B] rounded-full flex items-center justify-center mb-4 border border-[#27272A]">
-                    <Activity className="w-6 h-6 text-zinc-500" />
+              <div className="py-24 text-center border border-dashed border-border rounded-xl bg-card/50">
+                 <div className="w-16 h-16 mx-auto bg-card rounded-full flex items-center justify-center mb-4 border border-border">
+                    <Activity className="w-6 h-6 text-muted-foreground" />
                  </div>
-                 <h3 className="font-serif text-xl text-[#FAFAFA] mb-2">No active report</h3>
-                 <p className="text-zinc-500 mb-6">Generate a weekly summary of your dream life.</p>
+                 <h3 className="font-serif text-xl text-foreground mb-2">No active report</h3>
+                 <p className="text-muted-foreground mb-6">Generate a weekly summary of your dream life.</p>
                  <Button
                     onClick={generateReport}
                     disabled={isGeneratingReport}
-                    className="bg-white text-black hover:bg-zinc-200 rounded-full"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
                   >
                     Generate Report
                   </Button>

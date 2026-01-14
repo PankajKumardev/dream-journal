@@ -93,35 +93,35 @@ export function DreamForm({ onSubmit }: DreamFormProps) {
   }) => (
     <div className="space-y-3">
       <div className="flex justify-between items-center text-sm">
-        <span className="text-zinc-400 font-medium">{label}</span>
+        <span className="text-muted-foreground font-medium">{label}</span>
         <span className="text-base">{emoji}</span>
       </div>
       <div className="flex items-center gap-4">
-        <span className="text-xs text-zinc-600 font-medium">1</span>
+        <span className="text-xs text-muted-foreground font-medium">1</span>
         <input
           type="range"
           min="1"
           max="10"
           value={value}
           onChange={(e) => onChange(parseInt(e.target.value))}
-          className="flex-1 h-1.5 bg-zinc-800 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-zinc-900 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
+          className="flex-1 h-1.5 bg-muted rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-background [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
         />
-        <span className="text-xs text-zinc-600 font-medium">10</span>
+        <span className="text-xs text-muted-foreground font-medium">10</span>
       </div>
     </div>
   );
 
   return (
-    <div className="bg-[#18181B] text-[#FAFAFA]">
+    <div className="bg-card text-card-foreground">
       
       {/* Mode toggle */}
-      <div className="flex items-center border-b border-[#27272A] p-2 bg-[#09090B]">
+      <div className="flex items-center border-b border-border p-2 bg-background/50">
         <button
           onClick={() => setMode("voice")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-colors ${
             mode === "voice"
-              ? "bg-[#18181B] text-white shadow-sm"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "bg-card text-foreground shadow-sm border border-border"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
           <Mic className="w-4 h-4" /> Voice
@@ -130,8 +130,8 @@ export function DreamForm({ onSubmit }: DreamFormProps) {
           onClick={() => setMode("text")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-colors ${
             mode === "text"
-              ? "bg-[#18181B] text-white shadow-sm"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "bg-card text-foreground shadow-sm border border-border"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
           <PenLine className="w-4 h-4" /> Text
@@ -152,7 +152,7 @@ export function DreamForm({ onSubmit }: DreamFormProps) {
                 onRecordingComplete={handleVoiceRecording}
                 isProcessing={isProcessing}
               />
-              <p className="mt-8 text-zinc-500 text-sm text-center max-w-xs mx-auto">
+              <p className="mt-8 text-muted-foreground text-sm text-center max-w-xs mx-auto">
                  Tap to record. Speak naturally about your dream. We'll transcribe it instantly.
               </p>
             </motion.div>
@@ -170,12 +170,12 @@ export function DreamForm({ onSubmit }: DreamFormProps) {
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}
                   placeholder="I was walking through a library made of glass..."
-                  className="min-h-[200px] bg-[#09090B] border-[#27272A] text-lg text-[#FAFAFA] placeholder:text-zinc-700 focus:border-zinc-600 resize-none p-4 rounded-xl leading-relaxed"
+                  className="min-h-[200px] bg-background border-border text-lg text-foreground placeholder:text-muted-foreground focus:border-ring resize-none p-4 rounded-xl leading-relaxed"
                 />
               </div>
 
               {/* Metrics */}
-              <div className="space-y-6 pt-6 border-t border-[#27272A]">
+              <div className="space-y-6 pt-6 border-t border-border">
                 <SliderInput
                   label="Mood before sleep"
                   value={moodBefore}
@@ -200,7 +200,7 @@ export function DreamForm({ onSubmit }: DreamFormProps) {
               <Button
                 onClick={handleSubmit}
                 disabled={!transcript.trim() || isProcessing}
-                className="w-full bg-[#FAFAFA] text-black hover:bg-zinc-200 h-12 text-sm font-medium rounded-full mt-4 disabled:opacity-50 transition-colors border border-transparent"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 text-sm font-medium rounded-full mt-4 disabled:opacity-50 transition-colors border border-transparent"
               >
                 {isProcessing ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />

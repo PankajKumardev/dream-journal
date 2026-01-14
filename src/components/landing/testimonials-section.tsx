@@ -22,19 +22,19 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section className="px-6 py-24 bg-[#09090B] border-b border-zinc-900">
+    <section className="px-6 py-24 bg-background border-b border-border">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-serif text-white mb-12 text-center">Voices from the lucid.</h2>
+        <h2 className="text-3xl font-serif text-foreground mb-12 text-center">Voices from the lucid.</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((t, i) => (
-            <div key={i} className="p-8 rounded-xl bg-zinc-900/30 border border-zinc-800 hover:border-zinc-700 transition-colors">
+            <div key={i} className="p-8 rounded-xl bg-card/30 border border-border hover:border-primary/50 transition-colors">
               <div className="flex gap-1 mb-4">
                 {[1,2,3,4,5].map(s => <Star key={s} className="w-3 h-3 text-indigo-500 fill-indigo-500" />)}
               </div>
-              <p className="text-zinc-300 text-lg mb-6 leading-relaxed">&quot;{t.text}&quot;</p>
+              <p className="text-muted-foreground text-lg mb-6 leading-relaxed">&quot;{t.text}&quot;</p>
               <div>
-                <div className="text-white font-medium">{t.author}</div>
-                <div className="text-zinc-500 text-sm">{t.role}</div>
+                <div className="text-foreground font-medium">{t.author}</div>
+                <div className="text-muted-foreground text-sm">{t.role}</div>
               </div>
             </div>
           ))}

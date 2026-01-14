@@ -136,7 +136,7 @@ export function VoiceRecorder({
                   repeat: Infinity,
                   ease: "easeOut",
                 }}
-                className="absolute inset-0 rounded-full bg-white"
+                className="absolute inset-0 rounded-full bg-primary"
               />
               <motion.div
                 initial={{ scale: 1, opacity: 0 }}
@@ -150,7 +150,7 @@ export function VoiceRecorder({
                   ease: "easeOut",
                   delay: 0.2,
                 }}
-                className="absolute inset-0 rounded-full bg-white"
+                className="absolute inset-0 rounded-full bg-primary"
               />
             </>
           )}
@@ -162,8 +162,8 @@ export function VoiceRecorder({
           disabled={isProcessing}
           className={`relative w-24 h-24 rounded-full transition-all duration-300 flex items-center justify-center ${
             isRecording
-              ? "bg-[#FAFAFA] hover:bg-zinc-200 text-black shadow-xl"
-              : "bg-[#18181B] hover:bg-[#27272A] text-white border border-[#27272A] hover:border-white/20"
+              ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl border-none"
+              : "bg-card hover:bg-card/80 text-foreground border border-border hover:border-primary/50"
           } ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <AnimatePresence mode="wait">
@@ -174,7 +174,7 @@ export function VoiceRecorder({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
               >
-                <Loader2 className="w-8 h-8 animate-spin" />
+                <Loader2 className="w-8 h-8 animate-spin text-foreground" />
               </motion.div>
             ) : isRecording ? (
               <motion.div
@@ -209,8 +209,8 @@ export function VoiceRecorder({
             exit={{ opacity: 0, y: -10 }}
             className="flex flex-col items-center gap-2"
           >
-            <p className="text-[#FAFAFA] font-medium tracking-wide">Processing...</p>
-            <p className="text-zinc-500 text-sm">Translating your subconscious</p>
+            <p className="text-foreground font-medium tracking-wide">Processing...</p>
+            <p className="text-muted-foreground text-sm">Translating your subconscious</p>
           </motion.div>
         ) : isRecording ? (
           <motion.div
@@ -226,11 +226,11 @@ export function VoiceRecorder({
                 transition={{ duration: 2, repeat: Infinity }}
                 className="w-2 h-2 bg-red-500 rounded-full"
               />
-              <span className="text-[#FAFAFA] font-mono text-xl tracking-wider">
+              <span className="text-foreground font-mono text-xl tracking-wider">
                 {formatDuration(duration)}
               </span>
             </div>
-            <p className="text-zinc-500 text-sm">Listening...</p>
+            <p className="text-muted-foreground text-sm">Listening...</p>
           </motion.div>
         ) : (
           <motion.p
@@ -238,7 +238,7 @@ export function VoiceRecorder({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="text-zinc-400 text-sm"
+            className="text-muted-foreground text-sm"
           >
             Tap the mic to record your dream
           </motion.p>

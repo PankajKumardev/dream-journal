@@ -48,13 +48,13 @@ export function LandingSleepChart() {
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#18181B', 
-              border: '1px solid #27272A', 
+              backgroundColor: 'var(--card)', 
+              border: '1px solid var(--border)', 
               borderRadius: '8px',
-              color: '#fff'
+              color: 'var(--foreground)'
             }}
-            itemStyle={{ color: '#fff' }}
-            cursor={{ stroke: '#27272A', strokeWidth: 1 }}
+            itemStyle={{ color: 'var(--foreground)' }}
+            cursor={{ stroke: 'var(--border)', strokeWidth: 1 }}
           />
           <Area 
             type="monotone" 

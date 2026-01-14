@@ -37,15 +37,15 @@ export function HeroSection() {
       >
         <motion.h1 
           variants={itemVariants}
-          className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] font-serif font-medium tracking-tight text-white mb-6"
+          className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] font-serif font-medium tracking-tight text-foreground mb-6"
         >
           Make sense of your <br className="hidden md:block"/>
-          <span className="italic text-zinc-400">subconscious.</span>
+          <span className="italic text-muted-foreground">subconscious.</span>
         </motion.h1>
 
         <motion.p 
           variants={itemVariants}
-          className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed font-light tracking-wide"
+          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light tracking-wide"
         >
           The voice-first dream journal powered by AI. <br className="hidden md:block" />
           Record in seconds, understand forever.
@@ -56,12 +56,12 @@ export function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8"
         >
           <Link href="/dashboard">
-            <Button size="lg" className="w-full sm:w-auto h-11 px-8 rounded-full bg-white text-black hover:bg-zinc-200 transition-all hover:scale-105">
+            <Button size="lg" className="w-full sm:w-auto h-11 px-8 rounded-full transition-all hover:scale-105">
               Start Journaling
             </Button>
           </Link>
           <Link href="/demo">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto group h-11 px-8 rounded-full border-zinc-800 bg-transparent hover:bg-zinc-900 text-zinc-300 transition-all hover:border-zinc-700">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto group h-11 px-8 rounded-full transition-all">
               View Demo <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>

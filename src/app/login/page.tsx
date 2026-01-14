@@ -8,30 +8,30 @@ import { Moon, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-[#09090B]">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-background transition-colors duration-300">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Card className="w-full max-w-md bg-[#18181B] border border-[#27272A] shadow-none">
+        <Card className="w-full max-w-md bg-card border border-border shadow-none">
           <CardHeader className="text-center pb-8 pt-10">
             <div className="flex justify-center mb-6">
-               <div className="w-12 h-12 bg-[#27272A] rounded-full flex items-center justify-center">
-                  <Moon className="w-6 h-6 text-white fill-white" />
+               <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+                  <Moon className="w-6 h-6 text-foreground fill-foreground" />
                </div>
             </div>
-            <CardTitle className="font-serif text-3xl text-[#FAFAFA] font-normal">
+            <CardTitle className="font-serif text-3xl text-card-foreground font-normal">
               Welcome Back
             </CardTitle>
-            <p className="text-zinc-400 mt-2 text-sm">
+            <p className="text-muted-foreground mt-2 text-sm">
               Sign in to continue your journey into the subconscious.
             </p>
           </CardHeader>
           <CardContent className="space-y-6 px-10 pb-10">
             <Button
               onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-              className="w-full h-12 bg-white text-black hover:bg-zinc-200 font-medium rounded-full flex items-center justify-center gap-2 transition-colors"
+              className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 font-medium rounded-full flex items-center justify-center gap-2 transition-colors"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -56,17 +56,17 @@ export default function LoginPage() {
 
             <div className="relative pt-2">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#27272A]" />
+                <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase tracking-widest">
-                <span className="bg-[#18181B] px-3 text-zinc-500">
+                <span className="bg-card px-3 text-muted-foreground">
                   Encrypted & Private
                 </span>
               </div>
             </div>
 
             <div className="text-center">
-                <p className="text-xs text-zinc-500 leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   By continuing, you agree to our Terms of Service <br/> and Privacy Policy. All data is encrypted at rest.
                 </p>
             </div>

@@ -161,15 +161,15 @@ export default function DreamDetailPage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#09090B] pb-24 md:pt-28">
+      <div className="min-h-screen bg-background pb-24 md:pt-28">
         <Navigation />
         <main className="max-w-4xl mx-auto px-6">
-          <Skeleton className="h-8 w-48 mb-8 bg-[#18181B]" />
+          <Skeleton className="h-8 w-48 mb-8 bg-card" />
           <div className="space-y-6">
-             <Skeleton className="h-12 w-3/4 bg-[#18181B]" />
+             <Skeleton className="h-12 w-3/4 bg-card" />
              <div className="grid md:grid-cols-2 gap-6">
-               <Skeleton className="h-64 bg-[#18181B]" />
-               <Skeleton className="h-64 bg-[#18181B]" />
+               <Skeleton className="h-64 bg-card" />
+               <Skeleton className="h-64 bg-card" />
              </div>
           </div>
         </main>
@@ -182,7 +182,7 @@ export default function DreamDetailPage({
   const isAnalyzing = !dream.analysis || dream.analysis.analysisStatus === "pending";
 
   return (
-    <div className="min-h-screen bg-[#09090B] pb-24 pt-24 md:pt-28 text-[#FAFAFA]">
+    <div className="min-h-screen bg-background pb-24 pt-24 md:pt-28 text-foreground transition-colors duration-300">
       <Navigation />
 
       <main className="max-w-4xl mx-auto px-6">
@@ -195,7 +195,7 @@ export default function DreamDetailPage({
           <Button
             variant="ghost"
             onClick={() => router.push("/dashboard")}
-            className="text-zinc-500 hover:text-white pl-0 hover:bg-transparent"
+            className="text-muted-foreground hover:text-foreground pl-0 hover:bg-transparent"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dreams
           </Button>
@@ -205,7 +205,7 @@ export default function DreamDetailPage({
                 variant="outline"
                 size="icon"
                 onClick={() => handleExport("md")}
-                className="border-[#27272A] bg-transparent text-zinc-400 hover:text-white hover:bg-[#27272A]"
+                className="border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
              >
                 <Download className="w-4 h-4" />
              </Button>
@@ -214,19 +214,19 @@ export default function DreamDetailPage({
                    <Button
                       variant="outline"
                       size="icon"
-                      className="border-[#27272A] bg-transparent text-zinc-400 hover:text-rose-400 hover:bg-rose-950/20 hover:border-rose-900/50"
+                      className="border-border bg-transparent text-muted-foreground hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:border-rose-200 dark:hover:border-rose-900/50"
                    >
                       <Trash2 className="w-4 h-4" />
                    </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#18181B] border-[#27272A]">
+                <DialogContent className="bg-card border-border">
                    <DialogHeader>
-                      <DialogTitle className="text-[#FAFAFA]">Delete Entry?</DialogTitle>
+                      <DialogTitle className="text-foreground">Delete Entry?</DialogTitle>
                    </DialogHeader>
-                   <p className="text-zinc-400">This action cannot be undone.</p>
+                   <p className="text-muted-foreground">This action cannot be undone.</p>
                    <DialogFooter>
-                      <Button variant="ghost" onClick={() => setShowDeleteDialog(false)} className="text-zinc-400">Cancel</Button>
-                      <Button variant="destructive" onClick={handleDelete} className="bg-rose-600">Delete</Button>
+                      <Button variant="ghost" onClick={() => setShowDeleteDialog(false)} className="text-muted-foreground">Cancel</Button>
+                      <Button variant="destructive" onClick={handleDelete} className="bg-rose-600 hover:bg-rose-700">Delete</Button>
                    </DialogFooter>
                 </DialogContent>
              </Dialog>
@@ -241,20 +241,20 @@ export default function DreamDetailPage({
         >
           <div className="flex flex-col gap-4">
              <div>
-                <h1 className="font-serif text-4xl md:text-5xl text-[#FAFAFA] mb-3 leading-tight">
+                <h1 className="font-serif text-4xl md:text-5xl text-foreground mb-3 leading-tight">
                   {dream.title || "Untitled Dream"}
                 </h1>
-                <div className="flex items-center gap-4 text-zinc-500 text-sm">
+                <div className="flex items-center gap-4 text-muted-foreground text-sm">
                    <span>{formatRelativeTime(new Date(dream.recordedAt))}</span>
                    
                    {/* Badges */}
                    {dream.analysis?.isLucid && (
-                      <Badge variant="outline" className="border-indigo-500/30 text-indigo-300 bg-indigo-500/10 font-normal">
+                      <Badge variant="outline" className="border-indigo-500/30 text-indigo-500 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-500/10 font-normal">
                          Lucid Dream
                       </Badge>
                    )}
                    {dream.analysis?.isNightmare && (
-                      <Badge variant="outline" className="border-rose-500/30 text-rose-300 bg-rose-500/10 font-normal">
+                      <Badge variant="outline" className="border-rose-500/30 text-rose-500 dark:text-rose-300 bg-rose-50 dark:bg-rose-500/10 font-normal">
                          Nightmare
                       </Badge>
                    )}
@@ -270,15 +270,15 @@ export default function DreamDetailPage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="bg-[#18181B] border border-[#27272A] shadow-none h-full">
-              <CardHeader className="border-b border-[#27272A] pb-4">
-                <CardTitle className="font-serif text-lg font-normal text-[#FAFAFA] flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-zinc-500" />
+            <Card className="bg-card border border-border shadow-none h-full">
+              <CardHeader className="border-b border-border pb-4">
+                <CardTitle className="font-serif text-lg font-normal text-card-foreground flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-muted-foreground" />
                   Dream Transcript
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
-                <p className="text-zinc-300 leading-relaxed whitespace-pre-wrap font-light text-lg">
+                <p className="text-card-foreground/80 leading-relaxed whitespace-pre-wrap font-light text-lg">
                   {dream.transcript}
                 </p>
               </CardContent>
@@ -291,30 +291,30 @@ export default function DreamDetailPage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-             <Card className="bg-[#18181B] border border-[#27272A] shadow-none h-full">
-              <CardHeader className="border-b border-[#27272A] pb-4">
-                <CardTitle className="font-serif text-lg font-normal text-[#FAFAFA] flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-zinc-500" />
+             <Card className="bg-card border border-border shadow-none h-full">
+              <CardHeader className="border-b border-border pb-4">
+                <CardTitle className="font-serif text-lg font-normal text-card-foreground flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-muted-foreground" />
                   Dream Interpretation
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
                  {isAnalyzing ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-zinc-500">
+                    <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                        <Sparkles className="w-6 h-6 animate-spin mb-4" />
                        <p>Analyzing connections...</p>
                     </div>
                  ) : (
                     <div className="space-y-6">
-                       <p className="text-zinc-300 leading-relaxed font-light text-lg">
+                       <p className="text-card-foreground/80 leading-relaxed font-light text-lg">
                           {dream.analysis?.summary}
                        </p>
                        
                        {/* Themes Tags */}
                        {dream.analysis?.themes && (
-                          <div className="flex flex-wrap gap-2 pt-4 border-t border-[#27272A]">
+                          <div className="flex flex-wrap gap-2 pt-4 border-t border-border">
                              {dream.analysis.themes.map(theme => (
-                                <span key={theme} className="text-xs px-2 py-1 rounded-md bg-[#27272A] text-zinc-300 border border-zinc-700">
+                                <span key={theme} className="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground border border-border">
                                    #{theme}
                                 </span>
                              ))}
@@ -333,10 +333,10 @@ export default function DreamDetailPage({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
              >
-                <Card className="bg-[#18181B] border border-[#27272A] shadow-none">
-                   <CardHeader className="border-b border-[#27272A] pb-4">
-                      <CardTitle className="font-serif text-lg font-normal text-[#FAFAFA] flex items-center gap-2">
-                         <Moon className="w-4 h-4 text-zinc-500" />
+                <Card className="bg-card border border-border shadow-none">
+                   <CardHeader className="border-b border-border pb-4">
+                      <CardTitle className="font-serif text-lg font-normal text-card-foreground flex items-center gap-2">
+                         <Moon className="w-4 h-4 text-muted-foreground" />
                          Pre-Sleep State
                       </CardTitle>
                    </CardHeader>
@@ -346,8 +346,8 @@ export default function DreamDetailPage({
                             <div className="text-2xl mb-2">
                                {dream.moodBefore > 7 ? "😊" : dream.moodBefore > 4 ? "😐" : "😔"}
                             </div>
-                            <div className="text-xl font-serif text-[#FAFAFA]">{dream.moodBefore}/10</div>
-                            <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Mood</div>
+                            <div className="text-xl font-serif text-card-foreground">{dream.moodBefore}/10</div>
+                            <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Mood</div>
                          </div>
                       )}
                       {dream.stressLevel && (
@@ -355,8 +355,8 @@ export default function DreamDetailPage({
                             <div className="text-2xl mb-2">
                                {dream.stressLevel > 7 ? "😰" : dream.stressLevel > 4 ? "😐" : "😌"}
                             </div>
-                            <div className="text-xl font-serif text-[#FAFAFA]">{dream.stressLevel}/10</div>
-                            <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Stress</div>
+                            <div className="text-xl font-serif text-card-foreground">{dream.stressLevel}/10</div>
+                            <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Stress</div>
                          </div>
                       )}
                       {dream.sleepQuality && (
@@ -364,8 +364,8 @@ export default function DreamDetailPage({
                             <div className="text-2xl mb-2">
                                {dream.sleepQuality > 7 ? "😴" : dream.sleepQuality > 4 ? "😐" : "😫"}
                             </div>
-                            <div className="text-xl font-serif text-[#FAFAFA]">{dream.sleepQuality}/10</div>
-                            <div className="text-xs text-zinc-500 uppercase tracking-wider mt-1">Sleep</div>
+                            <div className="text-xl font-serif text-card-foreground">{dream.sleepQuality}/10</div>
+                            <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">Sleep</div>
                          </div>
                       )}
                    </CardContent>
@@ -380,10 +380,10 @@ export default function DreamDetailPage({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
              >
-                <Card className="bg-[#18181B] border border-[#27272A] shadow-none">
-                   <CardHeader className="border-b border-[#27272A] pb-4">
-                      <CardTitle className="font-serif text-lg font-normal text-[#FAFAFA] flex items-center gap-2">
-                         <LinkIcon className="w-4 h-4 text-zinc-500" />
+                <Card className="bg-card border border-border shadow-none">
+                   <CardHeader className="border-b border-border pb-4">
+                      <CardTitle className="font-serif text-lg font-normal text-card-foreground flex items-center gap-2">
+                         <LinkIcon className="w-4 h-4 text-muted-foreground" />
                          Related Dreams
                       </CardTitle>
                    </CardHeader>
@@ -392,17 +392,17 @@ export default function DreamDetailPage({
                          <div 
                             key={similar.id}
                             onClick={() => router.push(`/dreams/${similar.id}`)}
-                            className="p-4 rounded-lg bg-[#09090B] border border-[#27272A] hover:border-zinc-500 transition-colors cursor-pointer group"
+                            className="p-4 rounded-lg bg-muted/50 border border-border hover:border-primary/50 transition-colors cursor-pointer group"
                          >
                             <div className="flex justify-between items-center mb-2">
-                               <h4 className="text-zinc-200 font-medium group-hover:text-white transition-colors">
+                               <h4 className="text-foreground/90 font-medium group-hover:text-foreground transition-colors">
                                   {similar.title || "Untitled"}
                                </h4>
-                               <Badge variant="secondary" className="bg-[#18181B] text-zinc-500 border border-[#27272A]">
+                               <Badge variant="secondary" className="bg-muted text-muted-foreground border border-border">
                                   {Math.round(similar.similarity * 100)}% match
                                </Badge>
                             </div>
-                            <p className="text-zinc-500 text-sm line-clamp-2">
+                            <p className="text-muted-foreground text-sm line-clamp-2">
                                {similar.transcript}
                             </p>
                          </div>
