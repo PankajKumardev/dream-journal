@@ -1,0 +1,125 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  dreams        Dream[]
+  patterns      Pattern[]
+  reports       WeeklyReport[]
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Dream {
+  id              String         @id @default(uuid())
+  userId          String
+  title           String?
+  transcript      String         @db.Text
+  embedding       Unsupported("vector(1024)")?
+  embeddingStatus String         @default("pending") // pending|done|failed
+  recordedAt      DateTime       @default(now())
+  moodBefore      Int?           // 1-10 scale
+  stressLevel     Int?           // 1-10 scale
+  sleepQuality    Int?           // 1-10 scale
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  analysis        DreamAnalysis?
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([recordedAt(sort: Desc)])
+}
+
+model DreamAnalysis {
+  id             String   @id @default(uuid())
+  dreamId        String   @unique
+  analysisStatus String   @default("pending") // pending|done|failed
+  themes         Json     @default("[]")
+  emotions       Json     @default("{}")
+  symbols        Json     @default("[]")
+  people         Json     @default("[]")
+  settings       Json     @default("[]")
+  isNightmare    Boolean  @default(false)
+  isLucid        Boolean  @default(false)
+  vividness      Int      @default(5) // 1-10
+  summary        String   @default("") @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  dream          Dream    @relation(fields: [dreamId], references: [id], onDelete: Cascade)
+}
+
+model Pattern {
+  id              String   @id @default(uuid())
+  userId          String
+  patternType     String   // "recurring_theme", "temporal", "correlation"
+  patternData     Json
+  confidence      Float    // 0-1 normalized
+  occurrenceCount Int
+  firstSeen       DateTime @default(now())
+  lastSeen        DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, patternType])
+}
+
+model WeeklyReport {
+  id        String   @id @default(uuid())
+  userId    String
+  weekStart DateTime
+  content   String   @db.Text
+  stats     Json
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStart])
+  @@index([userId, weekStart])
+}
