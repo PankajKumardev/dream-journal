@@ -32,8 +32,9 @@ export default function InsightsPage() {
   } = useDreamStore();
 
   useEffect(() => {
-    fetchStats();
-    fetchPatterns();
+    // Force refresh to get latest data
+    fetchStats(true);
+    fetchPatterns(true);
     fetchWeeklyReport();
   }, [fetchStats, fetchPatterns, fetchWeeklyReport]);
 

@@ -165,8 +165,8 @@ export const useDreamStore = create<DreamStore>()(
       addDream: (dream) =>
         set((state) => ({
           dreams: [dream, ...state.dreams],
-          // Invalidate stats cache when new dream is added
-          lastFetchedAt: { ...state.lastFetchedAt, stats: null },
+          // Invalidate stats and patterns cache when new dream is added
+          lastFetchedAt: { ...state.lastFetchedAt, stats: null, patterns: null },
         })),
       updateDream: (id, updates) =>
         set((state) => ({
