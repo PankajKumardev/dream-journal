@@ -20,13 +20,13 @@ import { formatRelativeTime } from "@/lib/utils";
 import { useDreamStore, Dream } from "@/lib/store";
 import { 
   ArrowLeft, 
-  Clock, 
   FileText, 
   Sparkles, 
   Moon, 
   Trash2, 
   Download,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Loader2
 } from "lucide-react";
 
 interface SimilarDream {
@@ -48,6 +48,7 @@ export default function DreamDetailPage({
   const [similarDreams, setSimilarDreams] = useState<SimilarDream[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { dreams, deleteDream, updateDream } = useDreamStore();
@@ -120,6 +121,7 @@ export default function DreamDetailPage({
   };
 
   const handleExport = async (format: "pdf" | "md") => {
+    setIsExporting(true);
     try {
       const res = await fetch(`/api/export/${format}`, {
         method: "POST",
@@ -138,6 +140,8 @@ export default function DreamDetailPage({
       }
     } catch (error) {
       console.error("Error exporting dream:", error);
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -187,9 +191,14 @@ export default function DreamDetailPage({
                 variant="outline"
                 size="icon"
                 onClick={() => handleExport("md")}
-                className="border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted"
+                disabled={isExporting}
+                className="border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-50"
              >
-                <Download className="w-4 h-4" />
+                {isExporting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
              </Button>
              <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
                 <DialogTrigger asChild>
@@ -207,8 +216,17 @@ export default function DreamDetailPage({
                    </DialogHeader>
                    <p className="text-muted-foreground">This action cannot be undone.</p>
                    <DialogFooter>
-                      <Button variant="ghost" onClick={() => setShowDeleteDialog(false)} className="text-muted-foreground">Cancel</Button>
-                      <Button variant="destructive" onClick={handleDelete} className="bg-rose-600 hover:bg-rose-700">Delete</Button>
+                      <Button variant="ghost" onClick={() => setShowDeleteDialog(false)} disabled={isDeleting} className="text-muted-foreground">Cancel</Button>
+                      <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="bg-rose-600 hover:bg-rose-700">
+                        {isDeleting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          "Delete"
+                        )}
+                      </Button>
                    </DialogFooter>
                 </DialogContent>
              </Dialog>

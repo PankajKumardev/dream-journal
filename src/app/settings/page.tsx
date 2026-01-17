@@ -17,7 +17,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { User as UserIcon, LogOut, Trash2, Download, Info, Shield, FileText } from "lucide-react";
+import { User as UserIcon, LogOut, Trash2, Download, Info, Shield, FileText, Loader2 } from "lucide-react";
 
 interface User {
   id: string;
@@ -36,8 +36,10 @@ export default function SettingsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [exportStats, setExportStats] = useState<ExportStats | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [exportingFormat, setExportingFormat] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   useEffect(() => {
     fetchUser();
@@ -73,6 +75,7 @@ export default function SettingsPage() {
 
   const handleExportAll = async (format: "pdf" | "md" | "json") => {
     setIsExporting(true);
+    setExportingFormat(format);
     try {
       const res = await fetch(`/api/export/${format}`, {
         method: "POST",
@@ -93,6 +96,7 @@ export default function SettingsPage() {
       console.error("Error exporting:", error);
     } finally {
       setIsExporting(false);
+      setExportingFormat(null);
     }
   };
 
@@ -201,24 +205,33 @@ export default function SettingsPage() {
                     variant="outline"
                     onClick={() => handleExportAll("pdf")}
                     disabled={isExporting}
-                    className="border-border bg-background hover:bg-muted text-foreground"
+                    className="border-border bg-background hover:bg-muted text-foreground disabled:opacity-50"
                   >
+                    {exportingFormat === "pdf" ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : null}
                     Export PDF
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => handleExportAll("md")}
                     disabled={isExporting}
-                    className="border-border bg-background hover:bg-muted text-foreground"
+                    className="border-border bg-background hover:bg-muted text-foreground disabled:opacity-50"
                   >
+                    {exportingFormat === "md" ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : null}
                     Export Markdown
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => handleExportAll("json")}
                     disabled={isExporting}
-                    className="border-border bg-background hover:bg-muted text-foreground"
+                    className="border-border bg-background hover:bg-muted text-foreground disabled:opacity-50"
                   >
+                    {exportingFormat === "json" ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : null}
                     Export JSON
                   </Button>
                 </div>
@@ -282,10 +295,19 @@ export default function SettingsPage() {
               <CardContent className="pt-6 space-y-6">
                 <Button
                   variant="outline"
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="w-full border-border hover:bg-muted text-foreground justify-start"
+                  onClick={() => {
+                    setIsSigningOut(true);
+                    signOut({ callbackUrl: "/" });
+                  }}
+                  disabled={isSigningOut}
+                  className="w-full border-border hover:bg-muted text-foreground justify-start disabled:opacity-50"
                 >
-                  <LogOut className="w-4 h-4 mr-2" /> Sign Out
+                  {isSigningOut ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <LogOut className="w-4 h-4 mr-2" />
+                  )}
+                  {isSigningOut ? "Signing out..." : "Sign Out"}
                 </Button>
 
                 <div className="pt-6 border-t border-border">
@@ -317,6 +339,7 @@ export default function SettingsPage() {
                         <Button
                           variant="outline"
                           onClick={() => setShowDeleteDialog(false)}
+                          disabled={isDeleting}
                           className="border-border text-foreground hover:bg-muted"
                         >
                           Cancel
@@ -326,7 +349,14 @@ export default function SettingsPage() {
                           disabled={isDeleting}
                           className="bg-rose-600 hover:bg-rose-700 text-white"
                         >
-                          {isDeleting ? "Deleting..." : "Delete Account"}
+                          {isDeleting ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Deleting...
+                            </>
+                          ) : (
+                            "Delete Account"
+                          )}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
