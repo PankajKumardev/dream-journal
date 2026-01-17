@@ -17,44 +17,17 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { formatRelativeTime } from "@/lib/utils";
+import { useDreamStore, Dream } from "@/lib/store";
 import { 
   ArrowLeft, 
   Clock, 
   FileText, 
   Sparkles, 
-  Brain, 
-  Activity, 
   Moon, 
-  Share2, 
   Trash2, 
   Download,
-  AlertCircle,
-  Eye,
   Link as LinkIcon
 } from "lucide-react";
-
-interface Dream {
-  id: string;
-  title: string | null;
-  transcript: string;
-  recordedAt: string;
-  moodBefore: number | null;
-  stressLevel: number | null;
-  sleepQuality: number | null;
-  embeddingStatus: string;
-  analysis: {
-    analysisStatus: string;
-    themes: string[];
-    emotions: Record<string, number>;
-    symbols: string[];
-    people: string[];
-    settings: string[];
-    isNightmare: boolean;
-    isLucid: boolean;
-    vividness: number;
-    summary: string;
-  } | null;
-}
 
 interface SimilarDream {
   id: string;
@@ -77,9 +50,18 @@ export default function DreamDetailPage({
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  const { dreams, deleteDream, updateDream } = useDreamStore();
+
+  // Try to get dream from store first (instant load)
   useEffect(() => {
+    const cachedDream = dreams.find((d) => d.id === id);
+    if (cachedDream) {
+      setDream(cachedDream);
+      setIsLoading(false);
+    }
+    // Always fetch fresh data in background
     fetchDream();
-  }, [id]);
+  }, [id, dreams]);
 
   useEffect(() => {
     if (dream?.analysis?.analysisStatus === "done") {
@@ -101,6 +83,8 @@ export default function DreamDetailPage({
       if (res.ok) {
         const data = await res.json();
         setDream(data);
+        // Update store with fresh data
+        updateDream(id, data);
       } else if (res.status === 404) {
         router.push("/dashboard");
       }
@@ -126,10 +110,8 @@ export default function DreamDetailPage({
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/dreams/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        router.push("/dashboard");
-      }
+      await deleteDream(id);
+      router.push("/dashboard");
     } catch (error) {
       console.error("Error deleting dream:", error);
     } finally {

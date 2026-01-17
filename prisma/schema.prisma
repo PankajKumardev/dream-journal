@@ -75,8 +75,11 @@ model Dream {
   analysis        DreamAnalysis?
   user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Optimized indexes for common queries
   @@index([userId])
   @@index([recordedAt(sort: Desc)])
+  @@index([userId, recordedAt(sort: Desc)]) // Composite for user dashboard
+  @@index([embeddingStatus]) // For pending embedding jobs
 }
 
 model DreamAnalysis {
@@ -95,6 +98,9 @@ model DreamAnalysis {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   dream          Dream    @relation(fields: [dreamId], references: [id], onDelete: Cascade)
+
+  // Index for pending analysis jobs
+  @@index([analysisStatus])
 }
 
 model Pattern {

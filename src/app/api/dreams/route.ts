@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getCachedDreams, CACHE_TAGS } from "@/lib/cache";
+
+// Enable edge runtime for better performance
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,24 +19,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
 
-    const dreams = await prisma.dream.findMany({
-      where: { userId: session.user.id },
-      include: {
-        analysis: {
-          select: {
-            analysisStatus: true,
-            themes: true,
-            isNightmare: true,
-            isLucid: true,
-            vividness: true,
-            summary: true,
-          },
-        },
-      },
-      orderBy: { recordedAt: "desc" },
-      take: limit,
-      skip: offset,
-    });
+    // Use cached query
+    const dreams = await getCachedDreams(session.user.id, limit, offset);
 
     return NextResponse.json(dreams);
   } catch (error) {
@@ -81,6 +71,10 @@ export async function POST(request: NextRequest) {
         analysisStatus: "pending",
       },
     });
+
+    // Invalidate cache after mutation
+    revalidateTag(CACHE_TAGS.dreams(session.user.id), "max");
+    revalidateTag(CACHE_TAGS.stats(session.user.id), "max");
 
     return NextResponse.json(dream, { status: 201 });
   } catch (error) {

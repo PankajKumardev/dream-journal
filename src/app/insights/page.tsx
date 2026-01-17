@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Navigation } from "@/components/navigation";
 import {
@@ -14,90 +14,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDreamStore } from "@/lib/store";
 import { Lightbulb, BarChart3, Brain, Activity, Clock, Loader2, Zap } from "lucide-react";
 
-interface Pattern {
-  id: string;
-  patternType: string;
-  patternData: Record<string, unknown>;
-  confidence: number;
-  occurrenceCount: number;
-}
-
-interface Stats {
-  totalDreams: number;
-  analyzedDreams: number;
-  nightmareCount: number;
-  lucidCount: number;
-  avgVividness: number;
-  themes: { theme: string; count: number }[];
-  emotions: { emotion: string; value: number }[];
-  activity: { date: string; count: number }[];
-  moodTrend: { date: string; mood: number; stress: number }[];
-}
-
-interface WeeklyReport {
-  id: string;
-  weekStart: string;
-  content: string;
-  stats: Record<string, unknown>;
-  createdAt: string;
-}
-
 export default function InsightsPage() {
-  const [patterns, setPatterns] = useState<Pattern[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [weeklyReport, setWeeklyReport] = useState<WeeklyReport | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const {
+    patterns,
+    patternsLoading,
+    stats,
+    statsLoading,
+    weeklyReport,
+    reportLoading,
+    fetchPatterns,
+    fetchStats,
+    fetchWeeklyReport,
+    generateReport,
+  } = useDreamStore();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchStats();
+    fetchPatterns();
+    fetchWeeklyReport();
+  }, [fetchStats, fetchPatterns, fetchWeeklyReport]);
 
-  const fetchData = async () => {
-    try {
-      const [patternsRes, statsRes, reportRes] = await Promise.all([
-        fetch("/api/patterns"),
-        fetch("/api/stats"),
-        fetch("/api/reports/latest"),
-      ]);
-
-      if (patternsRes.ok) {
-        const patternsData = await patternsRes.json();
-        setPatterns(patternsData);
-      }
-
-      if (statsRes.ok) {
-        const statsData = await statsRes.json();
-        setStats(statsData);
-      }
-
-      if (reportRes.ok) {
-        const reportData = await reportRes.json();
-        setWeeklyReport(reportData);
-      }
-    } catch (error) {
-      console.error("Error fetching insights:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const generateReport = async () => {
-    setIsGeneratingReport(true);
-    try {
-      const res = await fetch("/api/reports/generate", { method: "POST" });
-      if (res.ok) {
-        const report = await res.json();
-        setWeeklyReport(report);
-      }
-    } catch (error) {
-      console.error("Error generating report:", error);
-    } finally {
-      setIsGeneratingReport(false);
-    }
-  };
+  const isLoading = statsLoading && !stats;
 
   if (isLoading) {
     return (
@@ -201,7 +141,7 @@ export default function InsightsPage() {
                   )}
                 </div>
 
-                {stats.activity.length > 0 && (
+                {stats.activity && stats.activity.length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -211,7 +151,7 @@ export default function InsightsPage() {
                   </motion.div>
                 )}
 
-                {stats.moodTrend.length > 0 && (
+                {stats.moodTrend && stats.moodTrend.length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -234,7 +174,13 @@ export default function InsightsPage() {
 
           {/* Patterns Tab */}
           <TabsContent value="patterns" className="space-y-4">
-            {patterns.length > 0 ? (
+            {patternsLoading && patterns.length === 0 ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-24 bg-card" />
+                ))}
+              </div>
+            ) : patterns.length > 0 ? (
               patterns.map((pattern, index) => (
                 <motion.div
                   key={pattern.id}
@@ -263,11 +209,11 @@ export default function InsightsPage() {
                 Weekly Report
               </h2>
               <Button
-                onClick={generateReport}
-                disabled={isGeneratingReport}
+                onClick={() => generateReport()}
+                disabled={reportLoading}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6"
               >
-                {isGeneratingReport ? (
+                {reportLoading ? (
                    <>
                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                      Generating...
@@ -316,8 +262,8 @@ export default function InsightsPage() {
                  <h3 className="font-serif text-xl text-foreground mb-2">No active report</h3>
                  <p className="text-muted-foreground mb-6">Generate a weekly summary of your dream life.</p>
                  <Button
-                    onClick={generateReport}
-                    disabled={isGeneratingReport}
+                    onClick={() => generateReport()}
+                    disabled={reportLoading}
                     className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
                   >
                     Generate Report

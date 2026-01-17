@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getCachedDream, CACHE_TAGS } from "@/lib/cache";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
@@ -14,15 +18,8 @@ export async function GET(
 
     const { id } = await params;
 
-    const dream = await prisma.dream.findFirst({
-      where: {
-        id,
-        userId: session.user.id,
-      },
-      include: {
-        analysis: true,
-      },
-    });
+    // Use cached query
+    const dream = await getCachedDream(id, session.user.id);
 
     if (!dream) {
       return NextResponse.json({ error: "Dream not found" }, { status: 404 });
@@ -74,6 +71,10 @@ export async function PUT(
       },
     });
 
+    // Invalidate caches
+    revalidateTag(CACHE_TAGS.dreams(session.user.id), "max");
+    revalidateTag(`dream-${id}`, "max");
+
     return NextResponse.json(dream);
   } catch (error) {
     console.error("Error updating dream:", error);
@@ -108,6 +109,12 @@ export async function DELETE(
     await prisma.dream.delete({
       where: { id },
     });
+
+    // Invalidate all related caches
+    revalidateTag(CACHE_TAGS.dreams(session.user.id), "max");
+    revalidateTag(CACHE_TAGS.stats(session.user.id), "max");
+    revalidateTag(CACHE_TAGS.patterns(session.user.id), "max");
+    revalidateTag(`dream-${id}`, "max");
 
     return NextResponse.json({ success: true });
   } catch (error) {

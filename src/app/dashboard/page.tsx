@@ -16,62 +16,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getGreeting } from "@/lib/utils";
+import { useDreamStore } from "@/lib/store";
 import { Search, Mic, Plus, FileText } from "lucide-react";
-
-interface Dream {
-  id: string;
-  title: string | null;
-  transcript: string;
-  recordedAt: string;
-  moodBefore: number | null;
-  analysis: {
-    analysisStatus: string;
-    themes: string[];
-    isNightmare: boolean;
-    isLucid: boolean;
-    vividness: number;
-    summary: string;
-  } | null;
-}
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [dreams, setDreams] = useState<Dream[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [userName, setUserName] = useState("");
+
+  // Zustand store
+  const {
+    dreams,
+    dreamsLoading,
+    user,
+    fetchDreams,
+    fetchUser,
+    createDream,
+  } = useDreamStore();
 
   useEffect(() => {
     fetchDreams();
     fetchUser();
-  }, []);
-
-  const fetchUser = async () => {
-    try {
-      const res = await fetch("/api/user");
-      if (res.ok) {
-        const data = await res.json();
-        setUserName(data.name || "Dreamer");
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
-
-  const fetchDreams = async () => {
-    try {
-      const res = await fetch("/api/dreams");
-      if (res.ok) {
-        const data = await res.json();
-        setDreams(data);
-      }
-    } catch (error) {
-      console.error("Error fetching dreams:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [fetchDreams, fetchUser]);
 
   const handleCreateDream = async (data: {
     transcript: string;
@@ -79,20 +45,8 @@ export default function DashboardPage() {
     stressLevel?: number;
     sleepQuality?: number;
   }) => {
-    const res = await fetch("/api/dreams", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) throw new Error("Failed to create dream");
-
-    const newDream = await res.json();
-    setDreams((prev) => [newDream, ...prev]);
+    await createDream(data);
     setIsDialogOpen(false);
-
-    // Trigger async analysis
-    fetch(`/api/dreams/${newDream.id}/analyze`, { method: "POST" });
   };
 
   const filteredDreams = dreams.filter(
@@ -109,6 +63,8 @@ export default function DashboardPage() {
     const today = new Date();
     return dreamDate.toDateString() === today.toDateString();
   });
+
+  const userName = user?.name || "Dreamer";
 
   return (
     <div className="min-h-screen bg-background pb-24 pt-24 md:pt-28 text-foreground transition-colors duration-300">
@@ -201,7 +157,7 @@ export default function DashboardPage() {
         {/* Dreams List */}
         <div className="space-y-4 pb-20">
           <AnimatePresence mode="popLayout">
-            {isLoading ? (
+            {dreamsLoading ? (
               // Loading skeletons
               [...Array(3)].map((_, i) => (
                 <motion.div
