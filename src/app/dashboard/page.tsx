@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Navigation } from "@/components/navigation";
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { getGreeting } from "@/lib/utils";
 import { useDreamStore } from "@/lib/store";
-import { Search, Mic, Plus, FileText } from "lucide-react";
+import { Search, Mic, Plus, FileText, Loader2 } from "lucide-react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -28,6 +28,8 @@ export default function DashboardPage() {
   const {
     dreams,
     dreamsLoading,
+    hasMoreDreams,
+    fetchMoreDreams,
     user,
     fetchDreams,
     fetchUser,
@@ -52,6 +54,30 @@ export default function DashboardPage() {
       return () => clearInterval(interval);
     }
   }, [dreams, fetchDreams]);
+
+  // Infinite Scroll Observer
+  const observerTarget = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMoreDreams && !dreamsLoading) {
+          fetchMoreDreams();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [hasMoreDreams, dreamsLoading, fetchMoreDreams]);
 
   const handleCreateDream = async (data: {
     transcript: string;
@@ -171,7 +197,7 @@ export default function DashboardPage() {
         {/* Dreams List */}
         <div className="space-y-4 pb-20">
           <AnimatePresence mode="popLayout">
-            {dreamsLoading ? (
+            {dreamsLoading && dreams.length === 0 ? (
               // Loading skeletons
               [...Array(3)].map((_, i) => (
                 <motion.div
@@ -225,6 +251,15 @@ export default function DashboardPage() {
               </motion.div>
             )}
           </AnimatePresence>
+          
+          {/* Infinite Scroll Sentinel */}
+          {!searchQuery && hasMoreDreams && (
+             <div ref={observerTarget} className="py-8 flex justify-center w-full min-h-[50px]">
+                {dreamsLoading && dreams.length > 0 && (
+                   <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                )}
+             </div>
+          )}
         </div>
       </main>
     </div>

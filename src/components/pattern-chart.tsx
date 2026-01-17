@@ -276,18 +276,9 @@ interface PatternCardProps {
     confidence: number;
     occurrenceCount: number;
   };
-  dreams?: {
-    id: string;
-    title: string | null;
-    recordedAt: string;
-    analysis?: {
-      themes: string[];
-      summary: string;
-    } | null;
-  }[];
 }
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Dialog,
@@ -296,10 +287,40 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Loader2 as LoaderIcon } from "lucide-react";
 
-export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
+interface ConnectedDream {
+  id: string;
+  title: string | null;
+  recordedAt: string;
+  analysis?: {
+    themes: string[];
+    summary: string;
+  } | null;
+}
+
+export function PatternCard({ pattern }: PatternCardProps) {
   const [open, setOpen] = useState(false);
+  const [connectedDreams, setConnectedDreams] = useState<ConnectedDream[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const theme = pattern.patternType === "recurring_theme" 
+    ? (pattern.patternData as { theme?: string }).theme 
+    : null;
+
+  // Fetch connected dreams when dialog opens
+  useEffect(() => {
+    if (open && theme && connectedDreams.length === 0) {
+      setLoading(true);
+      fetch(`/api/dreams/by-theme?theme=${encodeURIComponent(theme)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setConnectedDreams(data);
+        })
+        .catch(console.error)
+        .finally(() => setLoading(false));
+    }
+  }, [open, theme, connectedDreams.length]);
 
   const getPatternIcon = () => {
     switch (pattern.patternType) {
@@ -317,7 +338,7 @@ export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
   const getPatternTitle = () => {
     switch (pattern.patternType) {
       case "recurring_theme":
-        return `Recurring: ${(pattern.patternData as { theme?: string }).theme}`;
+        return `Recurring: ${theme}`;
       case "temporal":
         return `${(pattern.patternData as { day?: string }).day} Pattern`;
       case "correlation":
@@ -342,19 +363,7 @@ export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
     }
   };
 
-  // Filter dreams that match this pattern
-  const getConnectedDreams = () => {
-    if (pattern.patternType === "recurring_theme") {
-      const theme = (pattern.patternData as { theme?: string }).theme?.toLowerCase();
-      return dreams.filter((d) =>
-        d.analysis?.themes.some((t) => t.toLowerCase() === theme)
-      );
-    }
-    return [];
-  };
-
-  const connectedDreams = getConnectedDreams();
-  const hasConnectedDreams = connectedDreams.length > 0;
+  const isClickable = pattern.patternType === "recurring_theme" && pattern.occurrenceCount > 0;
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-US", {
@@ -365,12 +374,12 @@ export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={!isClickable}>
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           className={`p-6 bg-card rounded-xl border border-border transition-all ${
-            hasConnectedDreams 
+            isClickable 
               ? "cursor-pointer hover:border-primary/50 hover:bg-accent/30" 
               : ""
           }`}
@@ -382,7 +391,7 @@ export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <h4 className="font-serif text-lg text-card-foreground font-light">{getPatternTitle()}</h4>
-                {hasConnectedDreams && (
+                {isClickable && (
                   <ArrowRight className="w-4 h-4 text-muted-foreground" />
                 )}
               </div>
@@ -407,7 +416,7 @@ export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
         </motion.div>
       </DialogTrigger>
       
-      {hasConnectedDreams && (
+      {isClickable && (
         <DialogContent className="max-w-lg bg-card border-border">
           <DialogHeader>
             <DialogTitle className="font-serif text-xl font-normal flex items-center gap-2">
@@ -420,47 +429,59 @@ export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
             Dreams connected by this pattern:
           </p>
           
-          <div className="space-y-3 max-h-[400px] overflow-y-auto">
-            {connectedDreams.map((dream) => (
-              <Link
-                key={dream.id}
-                href={`/dreams/${dream.id}`}
-                onClick={() => setOpen(false)}
-                className="block p-4 rounded-lg bg-muted/30 border border-border hover:bg-accent/50 transition-colors"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <h5 className="font-medium text-foreground truncate">
-                      {dream.title || "Untitled Dream"}
-                    </h5>
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                      {dream.analysis?.summary || "No summary available"}
-                    </p>
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <LoaderIcon className="w-6 h-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              {connectedDreams.map((dream) => (
+                <Link
+                  key={dream.id}
+                  href={`/dreams/${dream.id}`}
+                  onClick={() => setOpen(false)}
+                  className="block p-4 rounded-lg bg-muted/30 border border-border hover:bg-accent/50 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-medium text-foreground truncate">
+                        {dream.title || "Untitled Dream"}
+                      </h5>
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                        {dream.analysis?.summary || "No summary available"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
+                      <Clock className="w-3 h-3" />
+                      {formatDate(dream.recordedAt)}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
-                    <Clock className="w-3 h-3" />
-                    {formatDate(dream.recordedAt)}
+                  
+                  {/* Show matching themes */}
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {dream.analysis?.themes.slice(0, 4).map((t) => (
+                      <span
+                        key={t}
+                        className={`text-xs px-2 py-0.5 rounded-full ${
+                          t.toLowerCase() === theme?.toLowerCase()
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        #{t}
+                      </span>
+                    ))}
                   </div>
-                </div>
-                
-                {/* Show matching themes */}
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {dream.analysis?.themes.slice(0, 4).map((t) => (
-                    <span
-                      key={t}
-                      className={`text-xs px-2 py-0.5 rounded-full ${
-                        t.toLowerCase() === (pattern.patternData as { theme?: string }).theme?.toLowerCase()
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      #{t}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+
+              {connectedDreams.length === 0 && !loading && (
+                <p className="text-center text-muted-foreground py-8">
+                  No dreams found with this theme.
+                </p>
+              )}
+            </div>
+          )}
         </DialogContent>
       )}
     </Dialog>

@@ -70,6 +70,8 @@ interface DreamStore {
   dreams: Dream[];
   dreamsLoading: boolean;
   dreamsFetched: boolean;
+  hasMoreDreams: boolean;
+  dreamsOffset: number;
 
   // Stats
   stats: Stats | null;
@@ -106,6 +108,7 @@ interface DreamStore {
   // Async actions
   fetchUser: () => Promise<void>;
   fetchDreams: (force?: boolean) => Promise<void>;
+  fetchMoreDreams: () => Promise<void>;
   fetchStats: (force?: boolean) => Promise<void>;
   fetchPatterns: (force?: boolean) => Promise<void>;
   fetchWeeklyReport: () => Promise<void>;
@@ -140,6 +143,8 @@ export const useDreamStore = create<DreamStore>()(
       dreams: [],
       dreamsLoading: false,
       dreamsFetched: false,
+      hasMoreDreams: true,
+      dreamsOffset: 0,
 
       stats: null,
       statsLoading: false,
@@ -208,22 +213,51 @@ export const useDreamStore = create<DreamStore>()(
 
       fetchDreams: async (force = false) => {
         const state = get();
+        // Reset pagination if forcing refresh or if not fetched
         if (!force && isCacheValid(state.lastFetchedAt.dreams) && state.dreamsFetched)
           return;
 
-        set({ dreamsLoading: true });
+        set({ dreamsLoading: true, dreamsOffset: 0 });
         try {
-          const res = await fetch("/api/dreams");
+          // Fetch first 20 dreams
+          const res = await fetch("/api/dreams?limit=20&offset=0");
           if (res.ok) {
             const data = await res.json();
             set({
               dreams: data,
               dreamsFetched: true,
+              hasMoreDreams: data.length === 20,
+              dreamsOffset: 20,
               lastFetchedAt: { ...get().lastFetchedAt, dreams: Date.now() },
             });
           }
         } catch (error) {
           console.error("Error fetching dreams:", error);
+        } finally {
+          set({ dreamsLoading: false });
+        }
+      },
+
+      fetchMoreDreams: async () => {
+        const state = get();
+        if (state.dreamsLoading || !state.hasMoreDreams) return;
+
+        set({ dreamsLoading: true });
+        try {
+          const limit = 20;
+          const offset = state.dreamsOffset;
+          const res = await fetch(`/api/dreams?limit=${limit}&offset=${offset}`);
+          
+          if (res.ok) {
+            const newDreams = await res.json();
+            set({
+              dreams: [...state.dreams, ...newDreams],
+              hasMoreDreams: newDreams.length === limit,
+              dreamsOffset: offset + limit,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching more dreams:", error);
         } finally {
           set({ dreamsLoading: false });
         }
