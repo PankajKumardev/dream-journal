@@ -20,7 +20,7 @@ export default async function LandingPage() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <LandingNavbar session={session} />
 
-      <main className="pt-32">
+      <main className="pt-24 md:pt-32">
         <HeroSection />
         <InterfaceShowcase />
         <FeaturesSection />

@@ -28,12 +28,12 @@ const itemVariants = {
 
 export function HeroSection() {
   return (
-    <section className="relative px-6 pb-32 md:pb-48 flex flex-col items-center text-center overflow-hidden mb-12 mt-8">
+    <section className="relative px-6 pb-20 md:pb-32 flex flex-col items-center text-center overflow-hidden mb-8 mt-6 lg:mt-10">
       <motion.div
         initial="visible"
         animate="visible"
         variants={containerVariants}
-        className="relative max-w-4xl mx-auto space-y-8 z-10"
+        className="relative max-w-5xl mx-auto space-y-8 z-10"
       >
         <motion.div variants={itemVariants} className="flex justify-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/50 border border-border text-secondary-foreground text-sm font-medium">
