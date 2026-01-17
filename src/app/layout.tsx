@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Instrument_Serif } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ClientProvider } from "@/components/client-provider";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
 
@@ -67,7 +68,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <ClientProvider>{children}</ClientProvider>
         </ThemeProvider>
         <Analytics />
       </body>

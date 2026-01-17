@@ -46,54 +46,69 @@ async function analyzeInBackground(
   userId: string
 ) {
   try {
-    // Step 1: Generate AI analysis
-    const analysis = await analyzeDream(transcript);
+    // Run Groq analysis and Jina embedding in PARALLEL for faster processing
+    const [analysisResult, embeddingResult] = await Promise.allSettled([
+      analyzeDream(transcript),
+      generateEmbeddingWithRetry(transcript),
+    ]);
 
-    // Update dream with title and analysis
-    await prisma.dream.update({
-      where: { id: dreamId },
-      data: { title: analysis.title },
-    });
-
-    await prisma.dreamAnalysis.update({
-      where: { dreamId },
-      data: {
-        analysisStatus: "done",
-        themes: analysis.themes,
-        emotions: analysis.emotions,
-        symbols: analysis.symbols,
-        people: analysis.people,
-        settings: analysis.settings,
-        isNightmare: analysis.isNightmare,
-        isLucid: analysis.isLucid,
-        vividness: analysis.vividness,
-        summary: analysis.summary,
-      },
-    });
-
-    // Step 2: Generate embedding (optional - may fail)
-    try {
-      const embedding = await generateEmbeddingWithRetry(transcript);
+    // Handle analysis result
+    if (analysisResult.status === "fulfilled") {
+      const analysis = analysisResult.value;
       
-      // Store embedding using raw SQL (Prisma doesn't support vector type directly)
+      // Update dream with title
+      await prisma.dream.update({
+        where: { id: dreamId },
+        data: { title: analysis.title },
+      });
+
+      // Update analysis data
+      await prisma.dreamAnalysis.update({
+        where: { dreamId },
+        data: {
+          analysisStatus: "done",
+          themes: analysis.themes,
+          emotions: analysis.emotions,
+          symbols: analysis.symbols,
+          people: analysis.people,
+          settings: analysis.settings,
+          isNightmare: analysis.isNightmare,
+          isLucid: analysis.isLucid,
+          vividness: analysis.vividness,
+          summary: analysis.summary,
+        },
+      });
+    } else {
+      console.error("Analysis failed:", analysisResult.reason);
+      await prisma.dreamAnalysis.update({
+        where: { dreamId },
+        data: { analysisStatus: "failed" },
+      });
+    }
+
+    // Handle embedding result
+    if (embeddingResult.status === "fulfilled") {
+      const embedding = embeddingResult.value;
       await prisma.$executeRaw`
         UPDATE "Dream" 
         SET embedding = ${embedding}::vector, "embeddingStatus" = 'done'
         WHERE id = ${dreamId}
       `;
-    } catch (embeddingError) {
-      console.error("Embedding generation failed:", embeddingError);
+    } else {
+      console.error("Embedding generation failed:", embeddingResult.reason);
       await prisma.dream.update({
         where: { id: dreamId },
         data: { embeddingStatus: "failed" },
       });
     }
 
-    // Step 3: Update patterns
-    try {
-      await updatePatterns(userId);
-    } catch (patternError) {
-      console.error("Pattern update failed:", patternError);
+    // Update patterns (only if analysis succeeded)
+    if (analysisResult.status === "fulfilled") {
+      try {
+        await updatePatterns(userId);
+      } catch (patternError) {
+        console.error("Pattern update failed:", patternError);
+      }
     }
   } catch (error) {
     console.error("Background analysis failed:", error);

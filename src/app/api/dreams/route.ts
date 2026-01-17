@@ -3,6 +3,10 @@ import { revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getCachedDreams, CACHE_TAGS } from "@/lib/cache";
+import { checkRateLimit, getClientIP, getRateLimitHeaders } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
+import { RATE_LIMITS } from "@/lib/constants";
+import { createDreamSchema, validateInput } from "@/lib/validations";
 
 // Enable edge runtime for better performance
 export const runtime = "nodejs";
@@ -24,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(dreams);
   } catch (error) {
-    console.error("Error fetching dreams:", error);
+    logger.api.error("/api/dreams GET", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -39,24 +43,46 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { transcript, moodBefore, stressLevel, sleepQuality } = body;
-
-    if (!transcript || typeof transcript !== "string") {
+    // Rate limiting
+    const clientIP = getClientIP(request);
+    const rateLimitKey = `${session.user.id}:${clientIP}`;
+    const rateLimit = checkRateLimit(rateLimitKey, "DREAMS_CREATE");
+    
+    if (!rateLimit.success) {
+      logger.warn("Rate limit exceeded for dream creation", { 
+        userId: session.user.id, 
+        ip: clientIP 
+      });
       return NextResponse.json(
-        { error: "Transcript is required" },
+        { error: "Too many requests. Please slow down." },
+        { 
+          status: 429,
+          headers: getRateLimitHeaders(rateLimit, RATE_LIMITS.DREAMS_CREATE),
+        }
+      );
+    }
+
+    const body = await request.json();
+    
+    // Validate input with Zod
+    const validation = validateInput(createDreamSchema, body);
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error },
         { status: 400 }
       );
     }
+    
+    const { transcript, moodBefore, stressLevel, sleepQuality } = validation.data;
 
     // Create dream with pending status
     const dream = await prisma.dream.create({
       data: {
         userId: session.user.id,
         transcript,
-        moodBefore: moodBefore ? parseInt(moodBefore) : null,
-        stressLevel: stressLevel ? parseInt(stressLevel) : null,
-        sleepQuality: sleepQuality ? parseInt(sleepQuality) : null,
+        moodBefore: moodBefore ?? null,
+        stressLevel: stressLevel ?? null,
+        sleepQuality: sleepQuality ?? null,
         embeddingStatus: "pending",
       },
       include: {
@@ -76,9 +102,11 @@ export async function POST(request: NextRequest) {
     revalidateTag(CACHE_TAGS.dreams(session.user.id), "max");
     revalidateTag(CACHE_TAGS.stats(session.user.id), "max");
 
+    logger.info("Dream created", { dreamId: dream.id, userId: session.user.id });
+
     return NextResponse.json(dream, { status: 201 });
   } catch (error) {
-    console.error("Error creating dream:", error);
+    logger.api.error("/api/dreams POST", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
