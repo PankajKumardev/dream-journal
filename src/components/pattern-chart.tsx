@@ -276,9 +276,31 @@ interface PatternCardProps {
     confidence: number;
     occurrenceCount: number;
   };
+  dreams?: {
+    id: string;
+    title: string | null;
+    recordedAt: string;
+    analysis?: {
+      themes: string[];
+      summary: string;
+    } | null;
+  }[];
 }
 
-export function PatternCard({ pattern }: PatternCardProps) {
+import { useState } from "react";
+import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ArrowRight, Clock } from "lucide-react";
+
+export function PatternCard({ pattern, dreams = [] }: PatternCardProps) {
+  const [open, setOpen] = useState(false);
+
   const getPatternIcon = () => {
     switch (pattern.patternType) {
       case "recurring_theme":
@@ -320,36 +342,127 @@ export function PatternCard({ pattern }: PatternCardProps) {
     }
   };
 
+  // Filter dreams that match this pattern
+  const getConnectedDreams = () => {
+    if (pattern.patternType === "recurring_theme") {
+      const theme = (pattern.patternData as { theme?: string }).theme?.toLowerCase();
+      return dreams.filter((d) =>
+        d.analysis?.themes.some((t) => t.toLowerCase() === theme)
+      );
+    }
+    return [];
+  };
+
+  const connectedDreams = getConnectedDreams();
+  const hasConnectedDreams = connectedDreams.length > 0;
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="p-6 bg-card rounded-xl border border-border hover:border-primary/50 transition-colors"
-    >
-      <div className="flex items-start gap-4">
-        <div className="p-3 bg-muted/50 border border-border rounded-lg text-muted-foreground">
-          {getPatternIcon()}
-        </div>
-        <div className="flex-1">
-          <h4 className="font-serif text-lg text-card-foreground font-light">{getPatternTitle()}</h4>
-          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-            {getPatternDescription()}
-          </p>
-          <div className="flex items-center gap-3 mt-4">
-            <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${pattern.confidence * 100}%` }}
-                transition={{ duration: 0.5 }}
-                className="h-full bg-foreground opacity-80"
-              />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className={`p-6 bg-card rounded-xl border border-border transition-all ${
+            hasConnectedDreams 
+              ? "cursor-pointer hover:border-primary/50 hover:bg-accent/30" 
+              : ""
+          }`}
+        >
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-muted/50 border border-border rounded-lg text-muted-foreground">
+              {getPatternIcon()}
             </div>
-            <span className="text-xs text-muted-foreground font-medium">
-              {Math.round(pattern.confidence * 100)}% confidence
-            </span>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <h4 className="font-serif text-lg text-card-foreground font-light">{getPatternTitle()}</h4>
+                {hasConnectedDreams && (
+                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                {getPatternDescription()}
+              </p>
+              <div className="flex items-center gap-3 mt-4">
+                <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${pattern.confidence * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                    className="h-full bg-foreground opacity-80"
+                  />
+                </div>
+                <span className="text-xs text-muted-foreground font-medium">
+                  {Math.round(pattern.confidence * 100)}% confidence
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </motion.div>
+        </motion.div>
+      </DialogTrigger>
+      
+      {hasConnectedDreams && (
+        <DialogContent className="max-w-lg bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-xl font-normal flex items-center gap-2">
+              {getPatternIcon()}
+              {getPatternTitle()}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <p className="text-sm text-muted-foreground mb-4">
+            Dreams connected by this pattern:
+          </p>
+          
+          <div className="space-y-3 max-h-[400px] overflow-y-auto">
+            {connectedDreams.map((dream) => (
+              <Link
+                key={dream.id}
+                href={`/dreams/${dream.id}`}
+                onClick={() => setOpen(false)}
+                className="block p-4 rounded-lg bg-muted/30 border border-border hover:bg-accent/50 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h5 className="font-medium text-foreground truncate">
+                      {dream.title || "Untitled Dream"}
+                    </h5>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                      {dream.analysis?.summary || "No summary available"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
+                    <Clock className="w-3 h-3" />
+                    {formatDate(dream.recordedAt)}
+                  </div>
+                </div>
+                
+                {/* Show matching themes */}
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {dream.analysis?.themes.slice(0, 4).map((t) => (
+                    <span
+                      key={t}
+                      className={`text-xs px-2 py-0.5 rounded-full ${
+                        t.toLowerCase() === (pattern.patternData as { theme?: string }).theme?.toLowerCase()
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </DialogContent>
+      )}
+    </Dialog>
   );
 }

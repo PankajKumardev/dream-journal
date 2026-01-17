@@ -19,12 +19,14 @@ import { Lightbulb, BarChart3, Brain, Activity, Clock, Loader2, Zap } from "luci
 
 export default function InsightsPage() {
   const {
+    dreams,
     patterns,
     patternsLoading,
     stats,
     statsLoading,
     weeklyReport,
     reportLoading,
+    fetchDreams,
     fetchPatterns,
     fetchStats,
     fetchWeeklyReport,
@@ -33,10 +35,11 @@ export default function InsightsPage() {
 
   useEffect(() => {
     // Force refresh to get latest data
+    fetchDreams(true);
     fetchStats(true);
     fetchPatterns(true);
     fetchWeeklyReport();
-  }, [fetchStats, fetchPatterns, fetchWeeklyReport]);
+  }, [fetchDreams, fetchStats, fetchPatterns, fetchWeeklyReport]);
 
   const isLoading = statsLoading && !stats;
 
@@ -189,7 +192,7 @@ export default function InsightsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <PatternCard pattern={pattern} />
+                  <PatternCard pattern={pattern} dreams={dreams} />
                 </motion.div>
               ))
             ) : (
