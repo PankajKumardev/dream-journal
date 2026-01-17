@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useRef } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Navigation } from "@/components/navigation";
@@ -21,7 +21,7 @@ import { useDreamStore, Dream } from "@/lib/store";
 import { 
   ArrowLeft, 
   FileText, 
-  Sparkles, 
+  Brain, 
   Moon, 
   Trash2, 
   Download,
@@ -53,39 +53,63 @@ export default function DreamDetailPage({
 
   const { dreams, deleteDream, updateDream } = useDreamStore();
 
-  // Try to get dream from store first (instant load)
+  // Track if initial fetch is done
+  const hasFetchedRef = useRef(false);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Try to get dream from store first (instant load) - only on mount
   useEffect(() => {
     const cachedDream = dreams.find((d) => d.id === id);
     if (cachedDream) {
       setDream(cachedDream);
       setIsLoading(false);
     }
-    // Always fetch fresh data in background
-    fetchDream();
-  }, [id, dreams]);
+    
+    // Only fetch once on mount
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchDreamData();
+    }
+  }, [id]);
 
   useEffect(() => {
     if (dream?.analysis?.analysisStatus === "done") {
       fetchSimilarDreams();
+      // Stop polling when done
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
     }
   }, [dream?.analysis?.analysisStatus]);
 
-  // Poll for analysis completion
+  // Poll for analysis completion - only if pending
   useEffect(() => {
-    if (dream && (!dream.analysis || dream.analysis.analysisStatus === "pending")) {
-      const interval = setInterval(fetchDream, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [dream]);
+    const isPending = dream && (!dream.analysis || dream.analysis.analysisStatus === "pending");
 
-  const fetchDream = async () => {
+    if (isPending && !pollingRef.current) {
+      pollingRef.current = setInterval(fetchDreamData, 3000);
+    }
+
+    if (!isPending && pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    };
+  }, [dream?.analysis?.analysisStatus]);
+
+  const fetchDreamData = async () => {
     try {
       const res = await fetch(`/api/dreams/${id}`);
       if (res.ok) {
         const data = await res.json();
         setDream(data);
-        // Update store with fresh data
-        updateDream(id, data);
       } else if (res.status === 404) {
         router.push("/dashboard");
       }
@@ -294,14 +318,14 @@ export default function DreamDetailPage({
              <Card className="bg-card border border-border shadow-none h-full">
               <CardHeader className="border-b border-border pb-4">
                 <CardTitle className="font-serif text-lg font-normal text-card-foreground flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-muted-foreground" />
+                  <Brain className="w-4 h-4 text-muted-foreground" />
                   Dream Interpretation
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
                  {isAnalyzing ? (
                     <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                       <Sparkles className="w-6 h-6 animate-spin mb-4" />
+                       <Loader2 className="w-6 h-6 animate-spin mb-4" />
                        <p>Analyzing connections...</p>
                     </div>
                  ) : (

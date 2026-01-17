@@ -39,6 +39,20 @@ export default function DashboardPage() {
     fetchUser();
   }, [fetchDreams, fetchUser]);
 
+  // Poll to refresh dreams if any are still analyzing
+  useEffect(() => {
+    const hasAnalyzingDream = dreams.some(
+      (d) => !d.analysis || d.analysis.analysisStatus === "pending"
+    );
+
+    if (hasAnalyzingDream) {
+      const interval = setInterval(() => {
+        fetchDreams(true); // Force refresh
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [dreams, fetchDreams]);
+
   const handleCreateDream = async (data: {
     transcript: string;
     moodBefore?: number;

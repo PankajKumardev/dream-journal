@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { formatRelativeTime, truncate } from "@/lib/utils";
-import { AlertCircle, Sparkles, Eye, Clock, ArrowRight } from "lucide-react";
+import { AlertCircle, Loader2, Eye, Clock, ArrowRight } from "lucide-react";
 
 interface DreamCardProps {
   dream: {
@@ -41,7 +41,7 @@ export function DreamCard({ dream, disableLink = false }: DreamCardProps) {
               <div className="flex gap-2">
                  {isAnalyzing && (
                     <span className="flex items-center gap-1 text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded-full border border-amber-500/20">
-                       <Sparkles className="w-3 h-3 animate-pulse" /> Analyzing
+                       <Loader2 className="w-3 h-3 animate-spin" /> Analyzing
                     </span>
                  )}
                  {dream.analysis?.isNightmare && (

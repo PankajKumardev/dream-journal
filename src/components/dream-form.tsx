@@ -104,7 +104,7 @@ export function DreamForm({ onSubmit }: DreamFormProps) {
           max="10"
           value={value}
           onChange={(e) => onChange(parseInt(e.target.value))}
-          className="flex-1 h-1.5 bg-muted rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-background [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
+          className="flex-1 h-1 bg-zinc-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-zinc-400 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-zinc-400 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-track]:bg-zinc-700 [&::-moz-range-track]:rounded-full"
         />
         <span className="text-xs text-muted-foreground font-medium">10</span>
       </div>
@@ -175,19 +175,21 @@ export function DreamForm({ onSubmit }: DreamFormProps) {
               </div>
 
               {/* Metrics */}
-              <div className="space-y-6 pt-6 border-t border-border">
+              <div className="space-y-6 pt-6 mt-2 border-t border-muted-foreground/20 max-h-[300px] overflow-y-auto scroll-smooth">
                 <SliderInput
                   label="Mood before sleep"
                   value={moodBefore}
                   onChange={setMoodBefore}
                   emoji={moodBefore > 7 ? "😊" : moodBefore > 4 ? "😐" : "😔"}
                 />
+                <div className="border-t border-muted-foreground/20" />
                 <SliderInput
                   label="Stress level"
                   value={stressLevel}
                   onChange={setStressLevel}
                   emoji={stressLevel > 7 ? "😰" : stressLevel > 4 ? "😐" : "😌"}
                 />
+                <div className="border-t border-muted-foreground/20" />
                 <SliderInput
                   label="Sleep quality"
                   value={sleepQuality}

@@ -25,9 +25,23 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    apple: "/icon-192.svg",
   },
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Dream Journal",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    title: "Dream Journal | Map Your Subconscious",
+    description: "AI-powered dream journal with voice recording, pattern detection, and psychological insights.",
+    siteName: "Dream Journal",
+  },
 };
 
 export const viewport: Viewport = {
