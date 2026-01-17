@@ -25,16 +25,15 @@ export default function DashboardPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Zustand store
-  const {
-    dreams,
-    dreamsLoading,
-    hasMoreDreams,
-    fetchMoreDreams,
-    user,
-    fetchDreams,
-    fetchUser,
-    createDream,
-  } = useDreamStore();
+  const dreams = useDreamStore((state) => state.dreams);
+  const dreamsLoading = useDreamStore((state) => state.dreamsLoading);
+  const hasMoreDreams = useDreamStore((state) => state.hasMoreDreams);
+  const user = useDreamStore((state) => state.user);
+  
+  const fetchDreams = useDreamStore((state) => state.fetchDreams);
+  const fetchMoreDreams = useDreamStore((state) => state.fetchMoreDreams);
+  const fetchUser = useDreamStore((state) => state.fetchUser);
+  const createDream = useDreamStore((state) => state.createDream);
 
   useEffect(() => {
     fetchDreams();
