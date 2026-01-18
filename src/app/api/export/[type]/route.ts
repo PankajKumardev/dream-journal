@@ -34,6 +34,27 @@ export async function POST(
       return NextResponse.json({ error: "No dreams found" }, { status: 404 });
     }
 
+    const limits = {
+      pdf: 500,    // PDF generation is memory-intensive
+      md: 5000,    // Markdown is lightweight
+      json: 5000,  // JSON is also lightweight
+    };
+
+    const limit = limits[type as keyof typeof limits] || 1000;
+    const dreamCount = dreams.length;
+    
+    if (dreamCount > limit) {
+      return NextResponse.json(
+        { 
+          error: `Export limit exceeded`, 
+          message: `Maximum ${limit} dreams for ${type.toUpperCase()} export. You have ${dreamCount} dreams. Please export in batches.`,
+          limit,
+          count: dreamCount
+        },
+        { status: 400 }
+      );
+    }
+
     switch (type) {
       case "pdf":
         return generatePDF(dreams);
@@ -56,6 +77,12 @@ export async function POST(
   }
 }
 
+interface Interpretation {
+  jungian?: string;
+  freudian?: string;
+  actionAdvice?: string;
+}
+
 interface DreamExport {
   id: string;
   title: string | null;
@@ -74,6 +101,7 @@ interface DreamExport {
     isLucid: boolean;
     vividness: number;
     summary: string;
+    interpretation?: unknown; 
   } | null;
 }
 
@@ -151,6 +179,59 @@ function generatePDF(dreams: DreamExport[]) {
       });
     }
 
+    // Interpretation
+    if (dream.analysis?.interpretation) {
+      const interp = dream.analysis.interpretation as Interpretation;
+      
+      if (interp.jungian) {
+        y += 5;
+        if (y > 250) { doc.addPage(); y = 20; }
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("Jungian:", margin, y);
+        y += 4;
+        doc.setTextColor(80);
+        const lines = doc.splitTextToSize(interp.jungian, maxWidth);
+        lines.forEach((line: string) => {
+          if (y > 270) { doc.addPage(); y = 20; }
+          doc.text(line, margin, y);
+          y += 4;
+        });
+      }
+      
+      if (interp.freudian) {
+        y += 3;
+        if (y > 250) { doc.addPage(); y = 20; }
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("Freudian:", margin, y);
+        y += 4;
+        doc.setTextColor(80);
+        const lines = doc.splitTextToSize(interp.freudian, maxWidth);
+        lines.forEach((line: string) => {
+          if (y > 270) { doc.addPage(); y = 20; }
+          doc.text(line, margin, y);
+          y += 4;
+        });
+      }
+      
+      if (interp.actionAdvice) {
+        y += 3;
+        if (y > 250) { doc.addPage(); y = 20; }
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("Reflection:", margin, y);
+        y += 4;
+        doc.setTextColor(80);
+        const lines = doc.splitTextToSize(interp.actionAdvice, maxWidth);
+        lines.forEach((line: string) => {
+          if (y > 270) { doc.addPage(); y = 20; }
+          doc.text(line, margin, y);
+          y += 4;
+        });
+      }
+    }
+
     // Themes
     if (dream.analysis?.themes) {
       const themes = dream.analysis.themes as string[];
@@ -203,6 +284,23 @@ function generateMarkdown(dreams: DreamExport[]) {
       markdown += `### Analysis\n\n`;
       markdown += `${dream.analysis.summary}\n\n`;
 
+      // Interpretation
+      if (dream.analysis.interpretation) {
+        const interp = dream.analysis.interpretation as Interpretation;
+        
+        if (interp.jungian) {
+          markdown += `#### Jungian Perspective\n\n${interp.jungian}\n\n`;
+        }
+        
+        if (interp.freudian) {
+          markdown += `#### Freudian Perspective\n\n${interp.freudian}\n\n`;
+        }
+        
+        if (interp.actionAdvice) {
+          markdown += `#### Reflection\n\n${interp.actionAdvice}\n\n`;
+        }
+      }
+
       const themes = dream.analysis.themes as string[];
       if (themes?.length > 0) {
         markdown += `**Themes:** ${themes.join(", ")}\n\n`;
@@ -251,6 +349,7 @@ function generateJSON(dreams: DreamExport[]) {
             isLucid: dream.analysis.isLucid,
             vividness: dream.analysis.vividness,
             summary: dream.analysis.summary,
+            interpretation: dream.analysis.interpretation || null,
           }
         : null,
     })),
@@ -263,3 +362,4 @@ function generateJSON(dreams: DreamExport[]) {
     },
   });
 }
+

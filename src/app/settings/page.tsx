@@ -235,6 +235,9 @@ export default function SettingsPage() {
                     Export JSON
                   </Button>
                 </div>
+                <p className="text-xs text-muted-foreground pt-2">
+                  Export limits: PDF (max 500 dreams), Markdown/JSON (max 5,000 dreams).
+                </p>
               </CardContent>
             </Card>
           </motion.div>
