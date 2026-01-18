@@ -22,6 +22,11 @@ export interface Dream {
     isLucid: boolean;
     vividness: number;
     summary: string;
+    interpretation?: {
+      jungian: string;
+      freudian: string;
+      actionAdvice: string;
+    };
   } | null;
 }
 

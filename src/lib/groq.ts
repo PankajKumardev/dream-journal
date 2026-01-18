@@ -56,9 +56,14 @@ export async function analyzeDream(transcript: string): Promise<{
   isLucid: boolean;
   vividness: number;
   summary: string;
+  interpretation: {
+    jungian: string;
+    freudian: string;
+    actionAdvice: string;
+  };
 }> {
   return withRetry(async () => {
-    const prompt = `You are a dream analyst. Analyze the following dream transcript and extract structured information.
+    const prompt = `You are an expert dream analyst trained in Jungian and Freudian psychology. Analyze the following dream transcript and extract structured information with deep psychological interpretation.
 
 Dream transcript:
 "${transcript}"
@@ -74,19 +79,27 @@ Respond ONLY with a valid JSON object (no markdown, no explanation) with this ex
   "isNightmare": false,
   "isLucid": false,
   "vividness": 7,
-  "summary": "A 2-3 sentence summary of the dream's meaning and significance."
+  "summary": "A 2-3 sentence summary of the dream's core narrative.",
+  "interpretation": {
+    "jungian": "Jungian interpretation focusing on archetypes, shadow self, anima/animus, collective unconscious, and individuation. 2-3 sentences.",
+    "freudian": "Freudian interpretation focusing on wish fulfillment, repressed desires, id/ego/superego dynamics. 2-3 sentences.",
+    "actionAdvice": "Practical advice for the dreamer based on the analysis. What might this dream be telling them to reflect on or do? 1-2 sentences."
+  }
 }
 
 Rules:
-- themes: 2-5 main themes (e.g., "flying", "water", "chase", "transformation")
+- themes: 2-5 main themes (e.g., "flying", "water", "chase", "transformation", "death", "rebirth")
 - emotions: object with emotion names as keys and intensity 0-1 as values
-- symbols: significant objects or elements with symbolic meaning
-- people: people mentioned (use relationships like "mother", "stranger", "friend")
-- settings: locations where the dream takes place
+- symbols: significant objects or elements with archetypal/symbolic meaning (e.g., "snake" = transformation, "water" = unconscious)
+- people: people mentioned (use relationships like "mother", "stranger", "shadow figure", "anima/animus")
+- settings: locations where the dream takes place (note symbolic significance)
 - isNightmare: true if the dream is frightening or distressing
 - isLucid: true if the dreamer was aware they were dreaming
 - vividness: 1-10 scale of how vivid/detailed the dream is
-- summary: psychological interpretation in 2-3 sentences`;
+- summary: brief narrative summary without interpretation
+- interpretation.jungian: Focus on archetypes (Hero, Shadow, Anima/Animus, Self), collective unconscious symbols, and the individuation process
+- interpretation.freudian: Focus on unconscious desires, wish fulfillment, childhood experiences, and psychosexual symbolism
+- interpretation.actionAdvice: Practical, actionable insight for the dreamer's waking life`;
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
@@ -97,7 +110,7 @@ Rules:
         },
       ],
       temperature: 0.3,
-      max_tokens: 1000,
+      max_tokens: 1500,
     });
 
     const content = completion.choices[0]?.message?.content || "{}";
@@ -123,6 +136,11 @@ Rules:
         isLucid: false,
         vividness: 5,
         summary: "Analysis could not be completed.",
+        interpretation: {
+          jungian: "Interpretation unavailable.",
+          freudian: "Interpretation unavailable.",
+          actionAdvice: "No advice available.",
+        },
       };
     }
   });

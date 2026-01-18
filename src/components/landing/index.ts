@@ -4,8 +4,8 @@ export { InterfaceShowcase } from "./interface-showcase";
 export { FeaturesSection } from "./features-section";
 export { QuoteSection } from "./quote-section";
 export { WorkflowSection } from "./workflow-section";
-export { IntegrationsSection } from "./integrations-section";
 export { TestimonialsSection } from "./testimonials-section";
 export { PricingSection } from "./pricing-section";
 export { CTASection } from "./cta-section";
 export { LandingFooter } from "./landing-footer";
+

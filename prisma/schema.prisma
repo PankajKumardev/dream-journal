@@ -95,6 +95,7 @@ model DreamAnalysis {
   isLucid        Boolean  @default(false)
   vividness      Int      @default(5) // 1-10
   summary        String   @default("") @db.Text
+  interpretation Json     @default("{}") // Jungian/Freudian interpretation
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   dream          Dream    @relation(fields: [dreamId], references: [id], onDelete: Cascade)

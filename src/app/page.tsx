@@ -6,7 +6,6 @@ import {
   FeaturesSection,
   QuoteSection,
   WorkflowSection,
-  IntegrationsSection,
   TestimonialsSection,
   PricingSection,
   CTASection,
@@ -15,7 +14,6 @@ import {
 
 export default async function LandingPage() {
   const session = await auth();
-  
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <LandingNavbar session={session} />
@@ -26,7 +24,6 @@ export default async function LandingPage() {
         <FeaturesSection />
         <QuoteSection />
         <WorkflowSection />
-        <IntegrationsSection />
         <TestimonialsSection />
         <PricingSection />
         <CTASection />

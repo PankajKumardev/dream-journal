@@ -84,6 +84,7 @@ async function analyzeInBackground(
           isLucid: analysis.isLucid,
           vividness: analysis.vividness,
           summary: analysis.summary,
+          interpretation: analysis.interpretation || {},
         },
       });
       

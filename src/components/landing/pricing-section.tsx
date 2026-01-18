@@ -25,10 +25,10 @@ export function PricingSection() {
               <p className="mt-4 text-sm text-muted-foreground">Perfect for casual journaling and basic recall.</p>
             </div>
             <ul className="space-y-4 text-sm text-muted-foreground">
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Unlimited Text Entries</li>
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Basic AI Transcription</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Unlimited Dream Entries</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Voice Transcription</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Basic AI Analysis</li>
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> 7-Day Insight History</li>
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Local Encryption</li>
             </ul>
             <Link href="/login">
               <Button variant="outline" className="w-full mt-6">
@@ -52,10 +52,10 @@ export function PricingSection() {
             </div>
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Everything in Dreamer</li>
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Advanced Jungian Analysis</li>
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Image Generation (Dream-to-Art)</li>
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Long-term Trend Reports</li>
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Sleep Tracker Integrations</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Jungian & Freudian Analysis</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Similar Dreams Detection</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Unlimited Pattern Insights</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Weekly AI Reports</li>
             </ul>
             <Link href="/login">
               <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-none mt-6">
@@ -68,3 +68,4 @@ export function PricingSection() {
     </section>
   );
 }
+

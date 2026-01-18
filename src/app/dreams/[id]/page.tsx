@@ -329,10 +329,59 @@ export default function DreamDetailPage({
                        <p>Analyzing connections...</p>
                     </div>
                  ) : (
-                    <div className="space-y-6">
-                       <p className="text-card-foreground/80 leading-relaxed font-light text-lg">
+                    <div className="space-y-4">
+                       {/* Summary */}
+                       <p className="text-card-foreground/80 leading-relaxed font-light">
                           {dream.analysis?.summary}
                        </p>
+                       
+                       {/* Psychological Interpretations - Collapsible */}
+                       {dream.analysis?.interpretation && (
+                         <details className="group pt-2">
+                           <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 select-none">
+                             <span className="text-xs">▶</span>
+                             <span className="group-open:hidden">Show psychological analysis</span>
+                             <span className="hidden group-open:inline">Hide psychological analysis</span>
+                           </summary>
+                           <div className="mt-4 space-y-4 text-sm">
+                             {/* Jungian */}
+                             {dream.analysis.interpretation.jungian && (
+                               <div>
+                                 <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                                   Jungian
+                                 </h4>
+                                 <p className="text-muted-foreground leading-relaxed">
+                                   {dream.analysis.interpretation.jungian}
+                                 </p>
+                               </div>
+                             )}
+                             
+                             {/* Freudian */}
+                             {dream.analysis.interpretation.freudian && (
+                               <div>
+                                 <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                                   Freudian
+                                 </h4>
+                                 <p className="text-muted-foreground leading-relaxed">
+                                   {dream.analysis.interpretation.freudian}
+                                 </p>
+                               </div>
+                             )}
+                             
+                             {/* Action Advice */}
+                             {dream.analysis.interpretation.actionAdvice && (
+                               <div className="pt-2 border-t border-border">
+                                 <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                                   Reflection
+                                 </h4>
+                                 <p className="text-muted-foreground leading-relaxed">
+                                   {dream.analysis.interpretation.actionAdvice}
+                                 </p>
+                               </div>
+                             )}
+                           </div>
+                         </details>
+                       )}
                        
                        {/* Themes Tags */}
                        {dream.analysis?.themes && (
