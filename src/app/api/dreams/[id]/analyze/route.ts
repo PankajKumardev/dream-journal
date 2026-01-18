@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { analyzeDream } from "@/lib/groq";
 import { generateEmbeddingWithRetry } from "@/lib/jina";
 import { updatePatterns } from "@/lib/patterns";
+import { logger } from "@/lib/logger";
 
 export async function POST(
   request: NextRequest,
@@ -32,7 +33,7 @@ export async function POST(
 
     return NextResponse.json({ status: "analyzing" });
   } catch (error) {
-    console.error("Error triggering analysis:", error);
+    logger.error("Error triggering analysis", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -45,12 +46,19 @@ async function analyzeInBackground(
   transcript: string,
   userId: string
 ) {
+  const startTime = Date.now();
+  
   try {
     // Run Groq analysis and Jina embedding in PARALLEL for faster processing
+    logger.debug("Starting parallel analysis", { dreamId });
+    
     const [analysisResult, embeddingResult] = await Promise.allSettled([
       analyzeDream(transcript),
       generateEmbeddingWithRetry(transcript),
     ]);
+
+    const parallelTime = Date.now() - startTime;
+    logger.debug(`Parallel tasks completed in ${parallelTime}ms`, { dreamId });
 
     // Handle analysis result
     if (analysisResult.status === "fulfilled") {
@@ -78,8 +86,10 @@ async function analyzeInBackground(
           summary: analysis.summary,
         },
       });
+      
+      logger.debug(`DB updates completed in ${Date.now() - startTime}ms`, { dreamId });
     } else {
-      console.error("Analysis failed:", analysisResult.reason);
+      logger.error("Analysis failed", analysisResult.reason, { dreamId });
       await prisma.dreamAnalysis.update({
         where: { dreamId },
         data: { analysisStatus: "failed" },
@@ -95,23 +105,26 @@ async function analyzeInBackground(
         WHERE id = ${dreamId}
       `;
     } else {
-      console.error("Embedding generation failed:", embeddingResult.reason);
+      logger.error("Embedding generation failed", embeddingResult.reason, { dreamId });
       await prisma.dream.update({
         where: { id: dreamId },
         data: { embeddingStatus: "failed" },
       });
     }
 
-    // Update patterns (only if analysis succeeded)
+    // Update patterns in background (don't block)
     if (analysisResult.status === "fulfilled") {
-      try {
-        await updatePatterns(userId);
-      } catch (patternError) {
-        console.error("Pattern update failed:", patternError);
-      }
+      // Fire and forget - don't await
+      updatePatterns(userId).catch((err) => {
+        logger.error("Pattern update failed", err, { userId });
+      });
     }
+    
+    const totalTime = Date.now() - startTime;
+    logger.info(`Dream analysis completed in ${totalTime}ms`, { dreamId, userId });
+    
   } catch (error) {
-    console.error("Background analysis failed:", error);
+    logger.error("Background analysis failed", error, { dreamId });
     
     // Mark analysis as failed
     await prisma.dreamAnalysis.update({

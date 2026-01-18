@@ -74,8 +74,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  reactStrictMode: false,
   reactCompiler: true,
-  // Silence turbopack warning for webpack-based PWA plugin
   turbopack: {},
   images: {
     remotePatterns: [

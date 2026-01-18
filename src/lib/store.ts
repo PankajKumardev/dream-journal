@@ -192,6 +192,8 @@ export const useDreamStore = create<DreamStore>()(
       // Async actions
       fetchUser: async () => {
         const state = get();
+        // Prevent duplicate calls
+        if (state.userLoading) return;
         if (isCacheValid(state.lastFetchedAt.user) && state.user) return;
 
         set({ userLoading: true });
@@ -213,6 +215,8 @@ export const useDreamStore = create<DreamStore>()(
 
       fetchDreams: async (force = false) => {
         const state = get();
+        // Prevent duplicate calls
+        if (state.dreamsLoading) return;
         // Reset pagination if forcing refresh or if not fetched
         if (!force && isCacheValid(state.lastFetchedAt.dreams) && state.dreamsFetched)
           return;
