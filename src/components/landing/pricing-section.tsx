@@ -28,7 +28,7 @@ export function PricingSection() {
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Unlimited Dream Entries</li>
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Voice Transcription</li>
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Basic AI Analysis</li>
-              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> 7-Day Insight History</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-muted-foreground" /> Export: JSON & Markdown (50 dreams)</li>
             </ul>
             <Link href="/login">
               <Button variant="outline" className="w-full mt-6">
@@ -56,6 +56,7 @@ export function PricingSection() {
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Similar Dreams Detection</li>
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Unlimited Pattern Insights</li>
               <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Weekly AI Reports</li>
+              <li className="flex items-center gap-3"><Check className="w-4 h-4 text-indigo-500" /> Export: PDF (500), JSON/MD (5,000)</li>
             </ul>
             <Link href="/login">
               <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-none mt-6">

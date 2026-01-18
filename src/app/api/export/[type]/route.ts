@@ -34,6 +34,10 @@ export async function POST(
       return NextResponse.json({ error: "No dreams found" }, { status: 404 });
     }
 
+    // Max limits to prevent memory/timeout issues
+    // TODO: Implement tier-based limits when subscription is added
+    // Free: PDF (single only), MD/JSON (50 dreams)
+    // Pro: PDF (500), MD/JSON (5,000)
     const limits = {
       pdf: 500,    // PDF generation is memory-intensive
       md: 5000,    // Markdown is lightweight
@@ -46,7 +50,7 @@ export async function POST(
     if (dreamCount > limit) {
       return NextResponse.json(
         { 
-          error: `Export limit exceeded`, 
+          error: "Export limit exceeded", 
           message: `Maximum ${limit} dreams for ${type.toUpperCase()} export. You have ${dreamCount} dreams. Please export in batches.`,
           limit,
           count: dreamCount

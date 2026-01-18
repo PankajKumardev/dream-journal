@@ -214,8 +214,23 @@ export default function DreamDetailPage({
              <Button
                 variant="outline"
                 size="icon"
+                onClick={() => handleExport("pdf")}
+                disabled={isExporting}
+                title="Export as PDF"
+                className="border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-50"
+             >
+                {isExporting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <FileText className="w-4 h-4" />
+                )}
+             </Button>
+             <Button
+                variant="outline"
+                size="icon"
                 onClick={() => handleExport("md")}
                 disabled={isExporting}
+                title="Export as Markdown"
                 className="border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-50"
              >
                 {isExporting ? (
