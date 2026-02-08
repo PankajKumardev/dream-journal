@@ -42,6 +42,20 @@ export const metadata: Metadata = {
     title: "Dream Journal | Map Your Subconscious",
     description: "AI-powered dream journal with voice recording, pattern detection, and psychological insights.",
     siteName: "Dream Journal",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 2400,
+        height: 1260,
+        alt: "Dream Journal AI - Make sense of your subconscious",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dream Journal | Map Your Subconscious",
+    description: "AI-powered dream journal with voice recording, pattern detection, and psychological insights.",
+    images: ["/opengraph-image.png"],
   },
 };
 
